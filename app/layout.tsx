@@ -39,6 +39,9 @@ export default function RootLayout({
 
         {children}
       </body>
+      <footer className="m-4">
+        <p className="text-lg text-gray-400">&copy; {new Date().getFullYear()} LiveNights</p>
+      </footer>
     </html>
   );
 }

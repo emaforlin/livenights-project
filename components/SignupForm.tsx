@@ -11,7 +11,7 @@ const SignupForm = () => {
   console.log("err:" + errors);
   
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} className="mx-6">
       <div className="mt-4">
         <label htmlFor="firstname" className="text-black text-lg">Nombre</label>
         <input type="text" id="firstname" placeholder="Nombre" 

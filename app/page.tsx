@@ -1,4 +1,5 @@
 import Image from "next/image";
+import SearchBar from "@/components/SearchBar";
 
 export default function Home() {
   return (
@@ -8,9 +9,11 @@ export default function Home() {
           aria-hidden
           src="/logo.svg"
           alt="Brand logo with slogan: Where events come to life"
-          width={700}
-          height={500}
+          className="object-cover p-8"
+          width={934}
+          height={169}
         />
+        <SearchBar />
       </main>
     </div>
   );

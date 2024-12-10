@@ -1,5 +1,5 @@
 type EventData = {
-    uid: string;
+    id: string;
     imageURL: string;
     title: string;
     description: string;

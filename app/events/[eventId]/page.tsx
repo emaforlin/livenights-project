@@ -3,6 +3,8 @@ import { database } from '@/db/db';
 import Image from 'next/image';
 import { date2text } from '@/app/utils/date';
 import { MapPin, Calendar } from 'lucide-react';
+import Link from 'next/link'
+
 
 async function SingleEvent({
     params,
@@ -24,6 +26,11 @@ async function SingleEvent({
     const event = database[foundIndex];
 
     return (
+        <>
+        <Link href="/events"
+            className="relative top-1 left-1 hover:underline">
+                Volver
+        </Link>
         <div className="flex m-5">
             <div className="w-1/2 p-4">
                 <Image src={event.imageURL} alt={"Cover of an event called "+event.title + " produced by "+event.producer}
@@ -47,6 +54,8 @@ async function SingleEvent({
                 </div>
             </div>
         </div>
+        </>
+
     )
 }
 

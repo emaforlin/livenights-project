@@ -1,3 +1,9 @@
+# Local db
+db/db.ts
+
+# Mock files
+public/mock*
+
 # Logs
 logs
 *.log

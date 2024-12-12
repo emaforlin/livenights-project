@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Link from "next/link";
+import NavBar from "@/components/NavBar";
+import { NavItem } from "@/lib/app-types";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -24,19 +25,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const navItems: NavItem[] = [
+    {label: "Login", href: "/login"},
+    {label: "Signup", href: "/signup"}
+  ];
+
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`h-screen ${geistSans.variable} ${geistMono.variable} antialiased`}
       > 
-        <div className=" py-4 px-2 bg-blue-700 ">
-          <ul className="flex gap-6 justify-end text-xl text-gray-100">
-            <Link href="/login">Login</Link>
-            <Link href="/signup">Signup</Link>
-          </ul>
-        </div>       
-
-
+      <NavBar items={navItems}></NavBar>
         {children}
       </body>
       <footer className="m-4">

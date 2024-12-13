@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { textFormat } from '@/app/utils/date'
+import { textFormat } from '@/utils/date'
 import { MapPin, Calendar } from 'lucide-react';
 
 

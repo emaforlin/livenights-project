@@ -1,17 +1,45 @@
 "use client";
 
-import { SignupData } from '@/interfaces/app-interfaces';
-import React from 'react'
-import { useForm } from 'react-hook-form'
+import React, { useEffect, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
 const SignupForm = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm<SignupData>();
+  const { register, handleSubmit, reset } = useForm<UserSignupData>();
+
+  const [apiResp, setApiResp] = useState<string|null>(null);
+
   
-  const onSubmit = handleSubmit( (data) => console.log(data));
-  console.log("err:" + errors);
+
+  const onSubmit: SubmitHandler<UserSignupData> = async (data) =>  {
+    try {
+      const resp = await fetch("/api/users", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(data),
+      });
+
+      const result = await resp.json();
+
+      if (resp.ok) {
+        setApiResp(result.message || "Inicio de sesion exitoso!");
+      } else {
+        setApiResp(result.message || "Inicio de sesion fallido.");
+      }
+    } catch (err) {
+      setApiResp("Ocurrio un error. Intente nuevamente.");
+    }
+  };
   
+  useEffect(() => {
+    if (apiResp) {
+      console.log(apiResp);
+      reset();
+    }
+  }, [apiResp, reset])
+
+
   return (
-    <form onSubmit={onSubmit} className="mx-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="mx-6">
       <div className="mt-4">
         <label htmlFor="firstname" className="text-black text-lg">Nombre</label>
         <input type="text" id="firstname" placeholder="Nombre" 
@@ -34,17 +62,9 @@ const SignupForm = () => {
         />
       </div>
 
-      <div className="mt-4">
-        <label htmlFor="mobile_number" className="text-black text-lg">Telefono</label>
-        <input type="tel" id="mobile_number" placeholder="Mobile number" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-        {...register("mobile_number", {required: true, minLength: 6, maxLength: 12})}
-        />
-      
-      </div>
-
       <div className="mt-4 mb-16">
-        <label htmlFor="password" className="text-black text-lg">Contrasena</label>
-        <input type="password" id="password" placeholder="Password" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black focus:tracking-widest"
+        <label htmlFor="password" className="text-black text-lg">Contraseña</label>
+        <input type="password" id="password" placeholder="Contraseña" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black focus:tracking-widest"
         {...register("password", {required: true, min: 8})}
         />
       </div>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { database } from '@/db/db';
 import Image from 'next/image';
-import { date2text } from '@/app/utils/date';
+import { date2text } from '@/utils/date';
 import { MapPin, Calendar } from 'lucide-react';
 import Link from 'next/link'
 

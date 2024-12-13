@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import { NavItem } from '@/app/lib/app-types';
+import { NavItem } from '@/types/app-types';
 
 interface NavbarProps {
     items: NavItem[];

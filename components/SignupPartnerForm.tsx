@@ -4,10 +4,10 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
-const SignupForm = () => {
+const SignupPartnerForm = () => {
   const router = useRouter();
 
-  const { register, handleSubmit, reset, formState: {errors} } = useForm<UserSignupData>();
+  const { register, handleSubmit, reset, formState: {errors} } = useForm<ProducerSignupData>();
 
   const [apiResp, setApiResp] = useState<{
     message: string,
@@ -21,7 +21,7 @@ const SignupForm = () => {
     });
   }
 
-  const onSubmit: SubmitHandler<UserSignupData> = async (data) =>  {
+  const onSubmit: SubmitHandler<ProducerSignupData> = async (data) =>  {
     try {
         const resp = await fetch("/api/users", {
         method: "POST",
@@ -63,7 +63,7 @@ const SignupForm = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="mx-6">
         <div className="mt-4">
           <label htmlFor="firstname" className="text-black text-lg">Nombre</label>
-          <input type="text" id="firstname" placeholder="Nombre" 
+          <input type="text" id="firstname" placeholder="(nombre del responsable)" 
           className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
           {...register("firstname", {required: true, maxLength: 80})}
           />
@@ -72,7 +72,7 @@ const SignupForm = () => {
 
         <div className="mt-4">
           <label htmlFor="lastname" className="text-black text-lg">Apellido</label>
-          <input type="text" id="lastname" placeholder="Apellido" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+          <input type="text" id="lastname" placeholder="(apellido del responsable)" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
           {...register("lastname", {required: true, maxLength: 100})}
           />
           {errors.lastname && <p className="text-red-600">Campo requerido</p>}
@@ -80,7 +80,15 @@ const SignupForm = () => {
 
         <div className="mt-4">
           <label htmlFor="email" className="text-black text-lg">Email</label>
-          <input type="text" id="email" placeholder="Email" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black" 
+          <input type="text" id="email" placeholder="(ingresa tu correo electronico)" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black" 
+          {...register("email", {required: true, pattern: /^\S+@\S+$/i})}
+          />
+          {errors.email && <p className="text-red-600">Campo requerido</p>}
+        </div>
+
+        <div className="mt-4">
+          <label htmlFor="producer" className="text-black text-lg">Organizacion</label>
+          <input type="text" id="producer" placeholder="(nombre de tu empresa)" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black" 
           {...register("email", {required: true, pattern: /^\S+@\S+$/i})}
           />
           {errors.email && <p className="text-red-600">Campo requerido</p>}
@@ -88,13 +96,13 @@ const SignupForm = () => {
 
         <div className="mt-4 mb-16">
           <label htmlFor="password" className="text-black text-lg">Contraseña</label>
-          <input type="password" id="password" placeholder="Contraseña" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black focus:tracking-widest"
+          <input type="password" id="password" placeholder="(elige una contraseña)" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black focus:tracking-widest"
           {...register("password", {required: true, min: 8})}
           />
           {errors.password && <p className="text-red-600">Campo requerido</p>}
         </div>
         <div className="w-full mt-4">
-          <button className="w-full h-12 font-bold text-2xl bg-blue-600 hover:bg-blue-800 transition duration-300">Registrarse</button>
+          <button className="w-full h-12 font-bold text-2xl bg-blue-600 hover:bg-blue-800 transition duration-300">Continuar</button>
         </div>
       </form>
 
@@ -110,4 +118,4 @@ const SignupForm = () => {
   );
 }
 
-export default SignupForm
+export default SignupPartnerForm

@@ -23,11 +23,13 @@ const SignupPartnerForm = () => {
 
   const onSubmit: SubmitHandler<ProducerSignupData> = async (data) =>  {
     try {
-        const resp = await fetch("/api/users", {
+        const resp = await fetch("/api/producers", {
         method: "POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify(data),
       });
+
+      console.log({data});
 
       const result = await resp.json();
       if (resp.ok) {
@@ -89,9 +91,9 @@ const SignupPartnerForm = () => {
         <div className="mt-4">
           <label htmlFor="producer" className="text-black text-lg">Organizacion</label>
           <input type="text" id="producer" placeholder="(nombre de tu empresa)" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black" 
-          {...register("email", {required: true, pattern: /^\S+@\S+$/i})}
+          {...register("companyName", {required: true, maxLength: 100})}
           />
-          {errors.email && <p className="text-red-600">Campo requerido</p>}
+          {errors.companyName && <p className="text-red-600">Campo requerido</p>}
         </div>
 
         <div className="mt-4 mb-16">

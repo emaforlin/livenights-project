@@ -14,48 +14,46 @@ export async function POST(req: NextRequest) {
         if (missingFields.length > 0) {
             return ErrorResponse("missing fields: "+missingFields, 400)
         }
+
+        console.log(body);
         
         // check for role
         const roleType = "producer";
-        let role = await prisma.role.findUnique({where: {type: roleType}})
-        if (!role) {
-            role = await prisma.role.create({
-                data: {
-                    type: roleType
-                }
-            })
-        }
+        const role = await prisma.role.upsert({
+            where: {type: roleType},
+            update: {},
+            create: {type: roleType}
+        })
 
         const newUser = await prisma.user.create({
             data: {
                 email: body.email,
                 firstname: body.firstname,
                 lastname: body.lastname,
-                password: body.password,         // NOT HASHED!!!
+                password: body.password,    // NOT HASHED!!!
                 roles: {
                     create: {
                         role: {
-                            connect: {id: role.id},
-                            },
-                        },
-                    },
+                            connect: {id: role.id}
+                        }
+                    }
+                },
                 Producer: {
                     create: {
-                        name: body.companyName
-                    }
-                }
+                        name: body.companyName,
+                    },
                 },
-                include: {
-                    roles: {
-                        include: {role: true}
-                }   
             },
+            include: {
+                roles: true,
+                Producer: true,
+            }
         });
 
         console.log("User created: ", newUser);
         return MessageResponse("user created successfully", newUser, 201)
 
-    } catch (error: unknown) {
+    } catch (error) {
         return ErrorResponse("something went wrong :(", 400)
     }
 }

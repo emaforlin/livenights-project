@@ -1,9 +1,12 @@
 "use client";
 
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 const SignupForm = () => {
+  const router = useRouter();
+
   const { register, handleSubmit, reset, formState: {errors} } = useForm<UserSignupData>();
 
   const [apiResp, setApiResp] = useState<{
@@ -27,12 +30,12 @@ const SignupForm = () => {
       });
 
       const result = await resp.json();
-      console.log("RESULT: ", JSON.stringify(result))
       if (resp.ok) {
         setApiResp({
           message: "Registro exitoso!",
           isAnError: false,
         });
+        router.push("/signup/successful")
       } else {
         setApiResp({
           message: result.message || "Registro fallido.",

@@ -22,6 +22,8 @@ model User {
   password String
 
   roles UserRole[]
+
+  Producer Producer[]
 }
 
 model Role {
@@ -39,4 +41,11 @@ model UserRole {
   role Role @relation(fields: [role_id], references: [id])
   
   @@unique([user_id, role_id])
+}
+
+model Producer {
+  id Int @id @default(autoincrement())
+  name String
+  user_id Int
+  user User @relation(fields: [user_id], references: [id])
 }

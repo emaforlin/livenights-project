@@ -23,7 +23,7 @@ export const EventProvider = ({ children }: { children: ReactNode }) => {
             const data = await res.json();
             setEvents(data);
         } catch (error) {
-            console.log("error fetching tasks", error);
+            console.log("error fetching event", error);
         }
     }
 
@@ -39,7 +39,7 @@ export const EventProvider = ({ children }: { children: ReactNode }) => {
 }
 
 export const useEventContext = () => {
-    const context = useContext(EventContext);
+    const context = useContext(EventContext.Provider);
     if (!context) {
         throw new Error("useEventContext must be used within an EventProvider")
     }

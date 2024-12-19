@@ -36,12 +36,12 @@ export default function RootLayout({
       <body
         className={`h-screen ${geistSans.variable} ${geistMono.variable} antialiased`}
       > 
-      <NavBar items={navItems}></NavBar>
-        {children}
-      </body>
-      <footer className="m-4">
-        <p className="text-lg text-gray-400">&copy; {new Date().getFullYear()} LiveNights</p>
+        <NavBar items={navItems}></NavBar>
+          {children}
+        <footer className="m-4">
+          <p className="text-lg text-gray-400">&copy; {new Date().getFullYear()} LiveNights</p>
       </footer>
+      </body>
     </html>
   );
 }

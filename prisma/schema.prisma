@@ -28,6 +28,7 @@ model Event {
 model User {
   id Int @id @default(autoincrement())
   email String @unique
+  alias String?
   firstname String
   lastname String
   password String

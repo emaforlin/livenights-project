@@ -1,48 +1,42 @@
-import { database } from "@/db/db";
-import { headers } from "next/headers";
 import { NextRequest } from "next/server";
+import { prisma } from "@/db/db";
+import { ErrorResponse, GenericResponse } from "@/utils/responses";
+import { Event } from "@prisma/client";
 
 export async function GET() {
-    const resp = await database;
+    const events = await prisma.event.findMany({ include:{ producer:true } });
 
-    return new Response(JSON.stringify(resp), {
-        status: 200,
-        headers: {"Content-Type": "application/json"}
-    })
+    return GenericResponse(events, 200);
 }
 
 export async function POST(req: NextRequest) {
     try {
+        // *****************************
+        // * check for `producer` role *
+        // *****************************
+
         const reqBody = await req.json()
-        const expectedFields = ["title", "imageURL", "description", "producer", "date", "location"]
+        const expectedFields: (keyof Event)[] = ["title", "description", "producer_id", "date", "location"]
         const missingFields = expectedFields.filter(f => !(f in reqBody))
         
         if (missingFields.length > 0) {
-            return new Response(JSON.stringify({
-                error: "missing fields",
-                missingFields
-            }), {
-                headers: {"Content-Type":"application/json"},
-                status: 400
-                } 
-            );
+            return ErrorResponse(`error missing fields: ${missingFields}`, 400);
         }
-
-        reqBody.uid = "abc"+database.length+1
-        database.push(reqBody);
-
-        return new Response(JSON.stringify(reqBody), {
-            headers: { "Content-Type": "application/json" },
-            status: 200,
+        
+        const newEvent = await prisma.event.create({
+            data: {
+                title: reqBody.title,
+                description: reqBody.description,
+                date: new Date(reqBody.date),
+                location: reqBody.location,
+                producer_id: reqBody.producer_id,
+            },
         });
 
+        return GenericResponse(newEvent, 201);
+
     } catch (error: any) {
-        return new Response(JSON.stringify({
-            error: "invalid JSON payload",
-            details: error.message
-        }), {
-            headers: {"Content-Type":"application/json"},
-            status: 400
-        })   
+        console.log("something went wrong: ", error.message);
+        return ErrorResponse("something went wrong :(", 400);
     }
 }

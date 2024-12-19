@@ -1,106 +1,68 @@
-import { database } from "@/db/db";
-import { headers } from "next/headers";
-
-export async function GET(request: Request, 
-    { params }: { params: Promise<{ id: string }> }
-) {
-    const uid = (await params).id;
-
-    const eventList = database;
-
-    const foundIndex = eventList.findIndex((e) => e.uid === uid);
-
-    if (foundIndex === -1) {
-        return new Response(JSON.stringify({
-            error: `event with id '${uid}' not found`
-        }),{
-            headers: {"Content-Type":"application/json"},
-            status: 404
-            }
-        )
-    }
-
-    return new Response(JSON.stringify(eventList[foundIndex]), {
-        headers: {"Content-Type":"application/json"},
-        status: 200
-    })
-}
+import { prisma } from "@/db/db";
+import { ErrorResponse, GenericResponse } from "@/utils/responses";
+import { Event } from "@prisma/client";
 
 export async function DELETE(request: Request, 
     { params }: { params: Promise<{ id: string }> }
 ) {
-    const uid = (await params).id;
+    const eventId = (await params).id;
 
-    const eventList = database;
+    const {id} = await prisma.event.delete({where: {id: parseInt(eventId) }});
 
-    const foundIndex = eventList.findIndex((e) => e.uid === uid);
-
-    if (foundIndex === -1) {
-        return new Response(JSON.stringify({
-            error: `product with id '${uid}' not found`
-        }),{
-            headers: {"Content-Type":"application/json"},
-            status: 404
-            }
-        )
+    if (!id) {
+        return ErrorResponse(`event with id: ${eventId} not found`, 404)
     }
 
-    database.splice(foundIndex, 1)
-
-    return new Response(JSON.stringify({"deleted": uid}), {
-        headers: {"Content-Type":"application/json"},
-        status: 200
-    })
+    return GenericResponse({"message": `deleted event with id: ${id}`}, 200);
 }
 
-export async function PUT(request: Request, { params }: 
+export async function GET(request: Request, 
+    { params }: { params: Promise<{ id: string }> }
+) {
+    const eventId = (await params).id;
+
+    const event = await prisma.event.findUnique({
+        where: {id: parseInt(eventId) },
+    });
+
+    if (!event) {
+        return ErrorResponse(`event with id: ${eventId} not found`, 404)
+    }
+
+    return GenericResponse(event, 200);
+}
+
+export async function PUT(req: Request, { params }: 
     { params:Promise<{ id: string }> }) {
     
     try {
-        const uid = (await params).id;
+            // *****************************
+            // * check for `producer` role *
+            // *****************************
+            const eventId = (await params).id;
 
-        const reqBody = await request.json()
-        const expectedFields = ["title", "imageURL", "description", "producer", "date", "location"]
-        const missingFields = expectedFields.filter(f => !(f in reqBody))
-        
-        if (missingFields.length > 0) {
-            return new Response(JSON.stringify({
-                error: "missing fields",
-                missingFields
-            }), {
-                headers: {"Content-Type":"application/json"},
-                status: 400
-                } 
-            );
+            const reqBody = await req.json();
+            
+            const updatedEvent = await prisma.event.update({
+                where: {id: parseInt(eventId)},
+                data: {
+                    title: reqBody.title,
+                    description: reqBody.description,
+                    date: new Date(reqBody.date),
+                    location: reqBody.location,
+                    producer_id: reqBody.producer_id,
+                },
+            });
+
+            if (!updatedEvent) {
+                return ErrorResponse(`event with id: ${eventId} not found`, 404)
+            }
+
+    
+            return GenericResponse(updatedEvent, 200);
+    
+        } catch (error: any) {
+            console.log("something went wrong: ", error.message);
+            return ErrorResponse("something went wrong :(", 400);
         }
-
-        const foundIndex = database.findIndex((e) => e.uid === uid);
-
-        if (foundIndex === -1) {
-            return new Response(JSON.stringify({
-                error: `event with id '${uid}' not found`,
-            }), {
-                headers: {"Content-Type":"application/json"},
-                status: 404
-                } 
-            );
-        }
-
-        reqBody.uid = uid;
-        database[foundIndex] = reqBody;
-
-        return new Response(JSON.stringify(reqBody), {
-            headers: { "Content-Type": "application/json" },
-            status: 200,
-        });
-
-    } catch (error: any) {
-        return new Response(JSON.stringify({
-            error: "invalid JSON payload",
-            details: error.message
-        }), {
-            headers: {"Content-Type":"application/json"},
-            status: 400
-        })   
-    }
 }

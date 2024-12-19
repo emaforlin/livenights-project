@@ -4,7 +4,7 @@ import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { Event } from "@prisma/client";
 
 export async function GET() {
-    const events = await prisma.event.findMany({ include:{ producer:true } });
+    const events = await prisma.event.findMany();
 
     return GenericResponse(events, 200);
 }

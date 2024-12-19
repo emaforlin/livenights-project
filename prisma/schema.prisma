@@ -13,6 +13,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Event {
+  id Int @id @default(autoincrement())
+  uid String @default(uuid())
+  title String @unique
+  description String 
+  date DateTime
+  location String
+  producer_id Int
+
+  producer User @relation(fields: [producer_id], references: [id])
+}
 
 model User {
   id Int @id @default(autoincrement())
@@ -22,6 +33,7 @@ model User {
   password String
 
   roles UserRole[]
+  events Event[]
 }
 
 model Role {

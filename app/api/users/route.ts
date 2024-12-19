@@ -1,14 +1,13 @@
-import { ErrorResponse, MessageResponse } from "@/utils/genericResponses";
-import { PrismaClient, Prisma, User } from "@prisma/client";
+import { prisma } from "@/db/db";
+import { ErrorResponse, GenericResponse } from "@/utils/responses";
+import { User } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-
-const prisma = new PrismaClient({})
 
 export async function POST(req: NextRequest) {
     try {
-        const body: UserSignupData = await req.json();
+        const body = await req.json();
 
-        const requiredFields: (keyof UserSignupData)[] = ["email", "firstname", "lastname", "password"]
+        const requiredFields: (keyof User)[] = ["email", "firstname", "lastname", "password"]
         const missingFields = requiredFields.filter((field) => !body[field])
 
         if (missingFields.length > 0) {
@@ -48,9 +47,15 @@ export async function POST(req: NextRequest) {
         });
 
         console.log("User created: ", newUser);
-        return MessageResponse("user created successfully", newUser, 201)
+        return GenericResponse(newUser, 201);
 
     } catch (error: unknown) {
         return ErrorResponse("something went wrong :(", 400)
     }
+}
+
+export async function GET() {
+    const users = await prisma.user.findMany();
+    console.log(users);
+    return GenericResponse(users, 200);
 }

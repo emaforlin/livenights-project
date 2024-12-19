@@ -10,11 +10,8 @@ export function ErrorResponse(errorMsg: string, code: number): NextResponse {
     })
 }
 
-export function MessageResponse(msg: string, body: any, code: number): NextResponse {
-    return new NextResponse(JSON.stringify({
-        message: msg,
-        body
-    }),
+export function GenericResponse(body: any, code: number): NextResponse {
+    return new NextResponse(JSON.stringify(body),
     {
         status: code,
         headers: {"Content-Type": "application/json"}

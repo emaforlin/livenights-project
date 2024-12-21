@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
 
-        const requiredFields: (keyof User)[] = ["email", "firstname", "lastname", "password"]
+        const requiredFields: (keyof User)[] = ["email", "username", "firstname", "lastname", "password"]
         const missingFields = requiredFields.filter((field) => !body[field])
 
         if (missingFields.length > 0) {
@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
         const newUser = await prisma.user.create({
             data: {
                 email: body.email,
+                username: body.username,
                 firstname: body.firstname,
                 lastname: body.lastname,
                 password: body.password,         // NOT HASHED!!!
@@ -49,7 +50,8 @@ export async function POST(req: NextRequest) {
         console.log("User created: ", newUser);
         return GenericResponse(newUser, 201);
 
-    } catch (error: unknown) {
+    } catch (error) {
+        console.log(error.message)
         return ErrorResponse("something went wrong :(", 400)
     }
 }

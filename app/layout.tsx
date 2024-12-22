@@ -25,7 +25,7 @@ const unprivilegedUserItems = [
   <html>
     <body>
     <SidebarProvider>
-    <AppSidebar items={unprivilegedUserItems}/>
+    <AppSidebar />
       <main>
         <SidebarTrigger />
         {children}

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/ui/app-sidebar"
-import { LogIn, Ticket, LogOut } from "lucide-react";
+import { LogIn } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Create Next App",

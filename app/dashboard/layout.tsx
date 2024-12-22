@@ -1,9 +1,13 @@
-import React from 'react'
+import { EventProvider } from "@/context/EventContext"
 
-const layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
+export default function Layout({
+    children,
+  }: {
+    children: React.ReactNode
+  }) {
     return (
-        { children }
+      <EventProvider>
+        {children}
+      </EventProvider>
     )
-}
-
-export default layout
+  }

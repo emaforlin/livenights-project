@@ -10,17 +10,6 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-
-
-    // Unauthenticated items.
-const unprivilegedUserItems = [
-  {
-    title: "Login",
-    url: "/login",
-    icon: LogIn,
-  },
-]
-
   return (
   <html>
     <body>

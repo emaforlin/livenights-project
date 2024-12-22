@@ -2,21 +2,16 @@
 
 import * as React from "react"
 import {
-  AudioWaveform,
   BookOpen,
   Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
+  Tickets,
   Settings2,
   SquareTerminal,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { EventSwitcher } from "@/components/event-switcher"
 import {
   Sidebar,
   SidebarContent,
@@ -28,27 +23,19 @@ import {
 // This is sample data.
 const data = {
   user: {
-    name: "shadcn",
+    firstname: "Emanuel",
+    lastname: "Forlin",
     email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    avatar: "/avatars/emanuel.jpg",
   },
-  teams: [
+  events: [
     {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
+      title: "Fiesta #1",
+      date: "20/07/2025",
+      logo: Tickets,
     },
   ],
+
   navMain: [
     {
       title: "Playground",
@@ -142,7 +129,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <EventSwitcher events={data.events} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

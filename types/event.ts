@@ -8,4 +8,4 @@ export type EventType = {
     date: Date;
     location: string;
     producer: ProducerType
-  }
+}

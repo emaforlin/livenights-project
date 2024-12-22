@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 
-export function AppSidebar({ items } : { items: {
+export function AppSidebar({ items }: { items: {
   title: string;
   url: string;
   icon: LucideIcon

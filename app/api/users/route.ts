@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
 
-        const requiredFields: (keyof User)[] = ["email", "username", "firstname", "lastname", "password"]
+        const requiredFields: (keyof User)[] = ["email", "firstname", "lastname", "username", "password"];
         const missingFields = requiredFields.filter((field) => !body[field])
 
         if (missingFields.length > 0) {
@@ -50,8 +50,7 @@ export async function POST(req: NextRequest) {
         console.log("User created: ", newUser);
         return GenericResponse(newUser, 201);
 
-    } catch (error) {
-        console.log(error.message)
+    } catch (error: unknown) {
         return ErrorResponse("something went wrong :(", 400)
     }
 }

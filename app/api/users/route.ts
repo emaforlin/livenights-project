@@ -56,9 +56,9 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-    const username = req.nextUrl.searchParams.get("username");
-    if (username) {
-        const user = await prisma.user.findUnique({where: {username: username}});
+    const userEmail = req.nextUrl.searchParams.get("email");
+    if (userEmail) {
+        const user = await prisma.user.findUnique({where: {email: userEmail}});
         if (!user) {
             return ErrorResponse("user not found", 404);
         }

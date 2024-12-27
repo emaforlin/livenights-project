@@ -55,8 +55,15 @@ export async function POST(req: NextRequest) {
     }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+    const username = req.nextUrl.searchParams.get("username");
+    if (username) {
+        const user = await prisma.user.findUnique({where: {username: username}});
+        if (!user) {
+            return ErrorResponse("user not found", 404);
+        }
+        return GenericResponse(user, 200);
+    }
     const users = await prisma.user.findMany();
-    console.log(users);
     return GenericResponse(users, 200);
 }

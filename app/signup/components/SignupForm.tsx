@@ -1,69 +1,62 @@
 "use client";
 
-import { signup } from '@/app/actions/auth';
-import { useForm, Resolver } from 'react-hook-form'
+import { signup } from '@/app/lib/actions';
+import { useActionState } from 'react';
 
 
 const SignupForm = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignupForm>();
-
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-    signup(data);
-  });
+  const [errorMessage, formAction, isPending] = useActionState(
+        signup,
+        undefined
+      );
 
   return (
-      <form onSubmit={onSubmit} className="mx-6">
+      <form action={formAction} className="mx-6">
         <div className="mt-4">
           <label htmlFor="firstname" className="text-black text-lg">Nombre</label>
-          <input type="text" id="firstname" placeholder="Nombre" 
+          <input type="text" id="firstname" name="firstname" placeholder="Nombre" 
           className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-          {...register("firstname", {required: true, minLength: 2, maxLength: 80})}
           />
         </div>
-        {errors?.firstname && <p className="text-red-600">{errors.firstname.message}</p>}
 
         <div className="mt-4">
           <label htmlFor="lastname" className="text-black text-lg">Apellido</label>
-          <input type="text" id="lastname" placeholder="Apellido" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-          {...register("lastname", {required: true, minLength: 2, maxLength: 80})}
+          <input type="text" id="lastname" name="lastname" placeholder="Apellido" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
           />
         </div>
-        {errors?.lastname && <p className="text-red-600">{errors.lastname.message}</p>}
 
         <div className="mt-4">
           <label htmlFor="username" className="text-black text-lg">Nombre de usuario</label>
-          <input type="text" id="username" placeholder="Usuario" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-          {...register("username", {required: true, minLength: 4, maxLength: 16})}
+          <input type="text" id="username" name="username" placeholder="Usuario" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
           />
         </div>
-        {errors?.username && <p className="text-red-600">{errors.username.message}</p>}
 
         <div className="mt-4">
           <label htmlFor="email" className="text-black text-lg">Email</label>
-          <input type="text" id="email" placeholder="Email" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black" 
-          {...register("email", {required: true, pattern: /^\S+@\S+$/i})} 
+          <input type="text" id="email" name="email" placeholder="Email" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black" 
           />
         </div>
-        <p>La contraseña debe:</p>
-        {errors?.email && <p className="text-red-600">{errors.email.message }</p>}
 
         <div className="mt-4 mb-16">
           <label htmlFor="password" className="text-black text-lg">Contraseña</label>
-          <input type="password" id="password" placeholder="Contraseña" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black focus:tracking-widest"
-          {...register("password", {required: true, minLength: 8})}
+          <input type="password" id="password" name="password" placeholder="Contraseña" className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-black focus:tracking-widest"
           />
         </div>
-        {errors?.password && <p className="text-red-600">{errors.password.message }</p>}
 
-       
+        <div
+          className="flex h-8 items-end space-x-1"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {errorMessage && (
+            <>
+              <p className="text-sm text-red-500">{errorMessage}</p>
+            </>
+          )}
+        </div>
 
         <div className="w-full mt-4">
-          <button type="submit" className="w-full h-12 text-white font-bold text-2xl bg-blue-600 hover:bg-blue-800 rounded-xl transition duration-300">Registrarse</button>
+          <button type="submit" aria-disabled={isPending} className="w-full h-12 text-white font-bold text-2xl bg-blue-600 hover:bg-blue-800 rounded-xl transition duration-300">Registrarse</button>
         </div>
       </form>
   );

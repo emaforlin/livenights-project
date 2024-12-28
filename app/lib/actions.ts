@@ -6,7 +6,6 @@ import bcrypt from "bcrypt";
 import { prisma } from "@/db/db";
 import { z } from "zod";
 import { User } from "@prisma/client";
-import SignupForm from "../signup/components/SignupForm";
 
 export async function authenticate(
     prevState: string | undefined,

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
-import { LogIn, Ticket, LogOut } from "lucide-react";
+import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,7 +13,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
   <html>
     <body>
-      {children}
+      <SessionProvider>
+        <SidebarProvider>
+          <AppSidebar>
+            <main>
+              <SidebarTrigger />
+                {children}
+            </main>
+          </AppSidebar>
+        </SidebarProvider>
+      </SessionProvider>
     </body>
   </html>
   )

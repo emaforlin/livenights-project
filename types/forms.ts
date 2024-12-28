@@ -5,3 +5,8 @@ interface SignupForm {
     lastname: string;
     password: string;
 }
+
+interface LoginForm {
+    email: string;
+    password: string;
+}

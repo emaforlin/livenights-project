@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
-import { LogIn, Ticket, LogOut } from "lucide-react";
+import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -10,27 +10,19 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-
-
-    // Unauthenticated items.
-const unprivilegedUserItems = [
-  {
-    title: "Login",
-    url: "/login",
-    icon: LogIn,
-  },
-]
-
   return (
   <html>
     <body>
-    <SidebarProvider>
-    <AppSidebar items={unprivilegedUserItems}/>
-      <main>
-        <SidebarTrigger />
-        {children}
-      </main>
-    </SidebarProvider>
+      <SessionProvider>
+        <SidebarProvider>
+          <AppSidebar>
+            <main>
+              <SidebarTrigger />
+                {children}
+            </main>
+          </AppSidebar>
+        </SidebarProvider>
+      </SessionProvider>
     </body>
   </html>
   )

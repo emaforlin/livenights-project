@@ -1,13 +1,12 @@
-interface UserSignupData {
+interface SignupForm {
     email: string;
+    username: string;
     firstname: string;
     lastname: string;
     password: string;
 }
-interface ProducerSignupData {
+
+interface LoginForm {
     email: string;
-    firstname: string;
-    lastname: string;
     password: string;
-    companyName: string;
 }

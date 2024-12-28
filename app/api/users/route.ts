@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
 
-        const requiredFields: (keyof User)[] = ["email", "username", "firstname", "lastname", "password"]
+        const requiredFields: (keyof User)[] = ["email", "firstname", "lastname", "username", "password"];
         const missingFields = requiredFields.filter((field) => !body[field])
 
         if (missingFields.length > 0) {
@@ -50,14 +50,20 @@ export async function POST(req: NextRequest) {
         console.log("User created: ", newUser);
         return GenericResponse(newUser, 201);
 
-    } catch (error) {
-        console.log(error.message)
+    } catch (error: unknown) {
         return ErrorResponse("something went wrong :(", 400)
     }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+    const userEmail = req.nextUrl.searchParams.get("email");
+    if (userEmail) {
+        const user = await prisma.user.findUnique({where: {email: userEmail}});
+        if (!user) {
+            return ErrorResponse("user not found", 404);
+        }
+        return GenericResponse(user, 200);
+    }
     const users = await prisma.user.findMany();
-    console.log(users);
     return GenericResponse(users, 200);
 }

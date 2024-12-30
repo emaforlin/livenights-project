@@ -2,17 +2,17 @@
 
 import { useState, createContext, ReactNode, useEffect, useContext } from "react";
 
-import { EventType } from "@/types/event";
+import { Event } from "@prisma/client";
 
 type EventContextType = {
-    events: EventType[];
+    events: Event[];
     fetchEvents: () => Promise<void>;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
 
 export const EventProvider = ({ children }: { children: ReactNode }) => {
-    const [events, setEvents] = useState<EventType[]>([]);
+    const [events, setEvents] = useState<Event[]>([]);
 
     const fetchEvents = async () => {
         try {

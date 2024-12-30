@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { prisma } from "./db/db";
+import { User } from "@prisma/client";
 
 export const { 
     handlers: {GET, POST},
@@ -16,43 +16,57 @@ export const {
     ],
 
     callbacks: {
-        async jwt({ token, user, profile }) {
+        async signIn( {user, profile} ) {
+            console.log("User is Signing In...");
+            if (!user || !user.email || !profile) return false;
+            
+            const res = await fetch(`${process.env.NEXTAUTH_URL}/api/users?email=${user.email}`)
+
+            let dbUser: User|null
+            if (res.ok) {
+                dbUser = await res.json();
+            } else{
+                dbUser = null
+            }
+
+            console.log("Found user in DB:", dbUser);
+
+            if (!dbUser) {
+                const res = await fetch(`${process.env.NEXTAUTH_URL}/api/users`, {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({
+                        email: user.email,
+                        firstname: profile.given_name,
+                        lastname: profile.family_name
+                    })
+                })
+                if (!res.ok) return false;
+                console.log("User successfully stored in DB.");
+            } else {
+                return true
+            }
+            return true;
+        },
+
+        async jwt({ token, user }) {
             if (user && user.email) {
                 const res = await fetch(`${process.env.NEXTAUTH_URL}/api/users?email=${encodeURIComponent(user.email)}`)
-                
                 if (!res.ok) return token;
 
                 // email stored on db
-                const { email } = await res.json();
-                console.log("EMAIL", email)
+                const { id: userId, email } = await res.json();
+
                 // checks if the user is on the db
-                if (email) {
-                    const userRoles = await prisma.userRole.findMany({where: { user: { email: user.email} }});
-                    const roleIds = userRoles.map(({ role_id }) =>(role_id));
+                if (!email) return token;
+        
 
-                    const roles = await prisma.role.findMany({
-                        where: {
-                            id: {
-                                in: roleIds
-                            }
-                        }
-                    });
+                const res1 = await fetch(`${process.env.NEXTAUTH_URL}/api/users/${userId}/roles`);
+                if (!res1.ok) return token;
+                const userRoles: string[] = await res1.json();
 
-                    const roleTypes = roles.map(({type}) => (type));
-
-                    token.role = roleTypes.join(" ");
-                    return token    
-                } else {
-                    await fetch("/api/users", {
-                        method: "POST",
-                        headers: {"Content-Type": "application/json"},
-                        body: JSON.stringify({
-                            email: user.email,
-                            firstname: profile?.given_name,
-                            lastname: profile?.family_name,
-                        })
-                    })
-                }
+                token.role = userRoles.join(" ");
+                return token    
             }
             return token;
         },
@@ -64,7 +78,3 @@ export const {
                         
     },
 });
-
-function CredentialsProvider(arg0: {}): import("@auth/core/providers").Provider {
-    throw new Error("Function not implemented.");
-}

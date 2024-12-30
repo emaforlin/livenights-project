@@ -4,17 +4,13 @@ import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { Event } from "@prisma/client";
 
 export async function GET() {
-    const events = await prisma.event.findMany();
+    const events = await prisma.event.findMany({ include: { producer: true } });
 
     return GenericResponse(events, 200);
 }
 
 export async function POST(req: NextRequest) {
     try {
-        // *****************************
-        // * check for `producer` role *
-        // *****************************
-
         const reqBody = await req.json()
         const expectedFields: (keyof Event)[] = ["title", "description", "producer_id", "date", "location"]
         const missingFields = expectedFields.filter(f => !(f in reqBody))
@@ -31,6 +27,9 @@ export async function POST(req: NextRequest) {
                 location: reqBody.location,
                 producer_id: reqBody.producer_id,
             },
+            include: {
+                producer: false
+            }
         });
 
         return GenericResponse(newEvent, 201);

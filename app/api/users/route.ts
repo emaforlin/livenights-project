@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
 
-        const requiredFields: (keyof User)[] = ["email", "firstname", "lastname", "username", "password"];
+        const requiredFields: (keyof User)[] = ["email", "firstname", "lastname"];
         const missingFields = requiredFields.filter((field) => !body[field])
 
         if (missingFields.length > 0) {

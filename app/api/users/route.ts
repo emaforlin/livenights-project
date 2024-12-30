@@ -14,36 +14,12 @@ export async function POST(req: NextRequest) {
             return ErrorResponse("missing fields: "+missingFields, 400)
         }
 
-        // check for role
-        const roleType = "GUEST";
-        let role = await prisma.role.findUnique({where: {type: roleType}})
-        if (!role) {
-            role = await prisma.role.create({
-                data: {
-                    type: roleType
-                }
-            })
-        }
-
         const newUser = await prisma.user.create({
             data: {
                 email: body.email,
                 username: body.username,
                 firstname: body.firstname,
                 lastname: body.lastname,
-                password: body.password,         // NOT HASHED!!!
-                roles: {
-                    create: {
-                        role: {
-                            connect: {id: role.id},
-                            },
-                        },
-                    },
-                },
-                include: {
-                    roles: {
-                        include: {role: true}
-                }   
             },
         });
 

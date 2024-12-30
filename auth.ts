@@ -24,7 +24,7 @@ export const {
 
                 // email stored on db
                 const { email } = await res.json();
-
+                console.log("EMAIL", email)
                 // checks if the user is on the db
                 if (email) {
                     const userRoles = await prisma.userRole.findMany({where: { user: { email: user.email} }});

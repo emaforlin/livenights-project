@@ -39,7 +39,7 @@ export const EventProvider = ({ children }: { children: ReactNode }) => {
 }
 
 export const useEventContext = () => {
-    const context = useContext(EventContext.Provider);
+    const context = useContext(EventContext);
     if (!context) {
         throw new Error("useEventContext must be used within an EventProvider")
     }

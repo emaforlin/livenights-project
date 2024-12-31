@@ -2,17 +2,21 @@
 
 import { useState, createContext, ReactNode, useEffect, useContext } from "react";
 
-import { Event } from "@prisma/client";
+import { Event, User } from "@prisma/client";
+
+type FullEvent = Event & {
+    producer: User
+}
 
 type EventContextType = {
-    events: Event[];
+    events: FullEvent[];
     fetchEvents: () => Promise<void>;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
 
 export const EventProvider = ({ children }: { children: ReactNode }) => {
-    const [events, setEvents] = useState<Event[]>([]);
+    const [events, setEvents] = useState<FullEvent[]>([]);
 
     const fetchEvents = async () => {
         try {
@@ -39,7 +43,7 @@ export const EventProvider = ({ children }: { children: ReactNode }) => {
 }
 
 export const useEventContext = () => {
-    const context = useContext(EventContext.Provider);
+    const context = useContext(EventContext);
     if (!context) {
         throw new Error("useEventContext must be used within an EventProvider")
     }

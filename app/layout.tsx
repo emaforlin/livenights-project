@@ -14,14 +14,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   <html>
     <body>
       <SessionProvider>
-        <SidebarProvider>
-          <AppSidebar>
-            <main>
-              <SidebarTrigger />
-                {children}
-            </main>
-          </AppSidebar>
-        </SidebarProvider>
+          {children}
       </SessionProvider>
     </body>
   </html>

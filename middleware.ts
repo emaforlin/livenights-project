@@ -8,7 +8,7 @@ export const config = {
 export async function middleware(req: NextRequest) {
     const accessRules : { [path: string]: string[] } = {
         "/dashboard": ["PRODUCER", "USER"],
-        "/path": ["ROLE"]
+        "/events": ["GUEST"],
     };
     
     const token = await getToken({ req, secret: process.env.AUTH_SECRET });

@@ -1,70 +1,51 @@
 import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import { prisma } from "./db/db";
+import GitHub from "next-auth/providers/github"
+import { db } from "./db/db";
 
-export const { 
-    handlers: {GET, POST},
-    auth, 
-    signIn, 
-    signOut 
-} = NextAuth({
-    providers: [
-        GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        }),
-    ],
-
+export const { handlers, signIn, signOut, auth} = NextAuth({
+    providers: [GitHub],
     callbacks: {
-        async jwt({ token, user, profile }) {
-            if (user && user.email) {
-                const res = await fetch(`${process.env.NEXTAUTH_URL}/api/users?email=${encodeURIComponent(user.email)}`)
-                
-                if (!res.ok) return token;
+        async signIn({ user }) {
+            const email = user.email!;
+            const name = user.name!;
 
-                // email stored on db
-                const { email } = await res.json();
-                console.log("EMAIL", email)
-                // checks if the user is on the db
-                if (email) {
-                    const userRoles = await prisma.userRole.findMany({where: { user: { email: user.email} }});
-                    const roleIds = userRoles.map(({ role_id }) =>(role_id));
-
-                    const roles = await prisma.role.findMany({
-                        where: {
-                            id: {
-                                in: roleIds
+            await db.user.upsert({
+                where: { email },
+                update: {},
+                create: { email, name, roles: {
+                    create: {
+                        role: {
+                            connect: { name: "USER" }
                             }
                         }
-                    });
-
-                    const roleTypes = roles.map(({type}) => (type));
-
-                    token.role = roleTypes.join(" ");
-                    return token    
-                } else {
-                    await fetch("/api/users", {
-                        method: "POST",
-                        headers: {"Content-Type": "application/json"},
-                        body: JSON.stringify({
-                            email: user.email,
-                            firstname: profile?.given_name,
-                            lastname: profile?.family_name,
-                        })
-                    })
+                    }
                 }
-            }
-            return token;
+            });
+            return true;
         },
 
         async session({ session, token }) {
-            session.user.role = token.role;
+            if (token?.role) {
+                session.user.role = token.role;
+            }
             return session;
         },
-                        
-    },
-});
 
-function CredentialsProvider(arg0: {}): import("@auth/core/providers").Provider {
-    throw new Error("Function not implemented.");
-}
+        async jwt({ token, user }) {
+            if (user) {
+                const dbUser = await db.user.findUnique({where: {email: user.email! }, include: {
+                    roles: {
+                        include: {role: true}
+                    }
+                }});
+                
+                const userRoles = dbUser?.roles
+                    .map(userRole => userRole.role.name)
+                    .join(" ");
+
+                token.role = userRoles || "GUEST";
+            }
+            return token;
+        }
+    }
+});

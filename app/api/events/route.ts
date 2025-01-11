@@ -1,10 +1,10 @@
 import { NextRequest } from "next/server";
-import { prisma } from "@/db/db";
+import { db } from "@/db/db";
 import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { Event } from "@prisma/client";
 
 export async function GET() {
-    const events = await prisma.event.findMany({ include: { producer: true } });
+    const events = await db.event.findMany({ include: { producer: true } });
 
     return GenericResponse(events, 200);
 }
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
             return ErrorResponse(`error missing fields: ${missingFields}`, 400);
         }
         
-        const newEvent = await prisma.event.create({
+        const newEvent = await db.event.create({
             data: {
                 title: reqBody.title,
                 description: reqBody.description,

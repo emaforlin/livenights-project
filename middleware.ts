@@ -11,7 +11,6 @@ export async function middleware(req: NextRequest) {
     }
 
     const roles = (token.role as string).split(" ");
-    console.log("DEBUG: Roles: ", roles);
 
     if (isOnDashboard && !roles.includes("PRODUCER")) {
         return NextResponse.redirect(new URL("/events", req.url));

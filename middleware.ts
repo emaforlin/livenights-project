@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt"
-import { url } from "inspector";
 
 export async function middleware(req: NextRequest) {
     const token = await getToken({ req, secret: process.env.AUTH_SECRET });
@@ -12,6 +11,7 @@ export async function middleware(req: NextRequest) {
     }
 
     const roles = (token.role as string).split(" ");
+    console.log("DEBUG: Roles: ", roles);
 
     if (isOnDashboard && !roles.includes("PRODUCER")) {
         return NextResponse.redirect(new URL("/events", req.url));

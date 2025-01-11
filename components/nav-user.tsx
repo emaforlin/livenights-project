@@ -2,12 +2,9 @@
 
 import {
   BadgeCheck,
-  Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
   Settings,
-  Sparkles,
 } from "lucide-react"
 
 import {
@@ -30,7 +27,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import Link from "next/link"
+import SignoutBtn from "./auth/SignoutBtn"
 
 export function NavUser({
   user,
@@ -96,7 +93,7 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <LogOut />
-              Cerrar sesion
+              <SignoutBtn />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

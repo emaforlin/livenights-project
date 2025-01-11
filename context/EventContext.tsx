@@ -2,11 +2,7 @@
 
 import { useState, createContext, ReactNode, useEffect, useContext } from "react";
 
-import { Event, User } from "@prisma/client";
-
-type FullEvent = Event & {
-    producer: User
-}
+import { FullEvent } from "@/types/event";
 
 type EventContextType = {
     events: FullEvent[];

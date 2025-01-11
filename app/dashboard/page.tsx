@@ -1,9 +1,15 @@
 import React from 'react'
+import { DataTable } from './components/data-table'
+import columns from './components/columns'
+import { useEventContext } from '@/context/EventContext'
 
-const page = () => {
+const Dashboard = () => {
   return (
-    <div>page</div>
+    <div className="w-full">
+      <h1 className="text-2xl">Eventos</h1>
+      <DataTable columns={columns} data={[]}/>
+    </div>
   )
 }
 
-export default page
+export default Dashboard

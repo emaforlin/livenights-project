@@ -1,11 +1,5 @@
-import { ProducerType } from "./producer";
+import { User, Event } from "@prisma/client";
 
-export type EventType = {
-    id: number;
-    uid: string
-    title: string;
-    description: string;
-    date: Date;
-    location: string;
-    producer: ProducerType
-  }
+export type FullEvent = Event & {
+  producer: User
+}

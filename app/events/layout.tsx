@@ -1,4 +1,3 @@
-import { SidebarProvider } from "@/components/ui/sidebar"
 import { EventProvider } from "@/context/EventContext"
 
 export default function Layout({

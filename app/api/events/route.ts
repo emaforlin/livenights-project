@@ -3,9 +3,24 @@ import { db } from "@/db/db";
 import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { Event } from "@prisma/client";
 
-export async function GET() {
-    const events = await db.event.findMany({ include: { producer: true } });
+export async function GET(req: NextRequest) {
+    const searchParams = req.nextUrl.searchParams;
+    const producerId = searchParams.get("producer");
 
+    console.log(producerId);
+
+    if (producerId) {
+        const events = await prisma.event.findMany({where: {
+            producer_id: parseInt(producerId)
+        }});
+        if (events.length < 1) {
+            return ErrorResponse("the user has no events created yet.", 404);
+        }
+
+        return GenericResponse(events, 200);
+    }
+
+    const events = await prisma.event.findMany();
     return GenericResponse(events, 200);
 }
 

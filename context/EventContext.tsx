@@ -13,13 +13,14 @@ const EventContext = createContext<EventContextType | undefined>(undefined);
 
 export const EventProvider = ({ children }: { children: ReactNode }) => {
     const [events, setEvents] = useState<FullEvent[]>([]);
-
-    const fetchEvents = async () => {
+    
+    const fetchEvents = async (producerId: string) => {
         try {
-            const res = await fetch("/api/events");
+            const res = await fetch(`/api/events?producer=${producerId}`);
             if (!res.ok) {
                 throw new Error("error fetching events");
             }
+
             const data = await res.json();
             setEvents(data);
         } catch (error) {
@@ -28,11 +29,12 @@ export const EventProvider = ({ children }: { children: ReactNode }) => {
     }
 
     useEffect(() => {
-        fetchEvents();
-    }, []);
+        fetchEvents(producerId);
+    
+    }, [producerId]);
 
     return (
-        <EventContext.Provider value={{events, fetchEvents}}>
+        <EventContext.Provider value={{events, fetchEvents, producerId, selectProducer}}>
             {children}
         </EventContext.Provider>
     )

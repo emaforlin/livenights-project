@@ -4,7 +4,7 @@ import { Event, User } from "@prisma/client";
 import { useState, createContext, ReactNode, useEffect, useContext } from "react";
 
 type EventContextType = {
-    events: (Event & User)[];
+    events: (Event & {producer: User})[];
     fetchEvents: () => Promise<void>;
     fetchProducerEvents: () => Promise<void>;
     setProducer: (id: number) => void;
@@ -13,7 +13,7 @@ type EventContextType = {
 const EventContext = createContext<EventContextType | undefined>(undefined);
 
 export const EventProvider = ({ children }: { children: ReactNode }) => {
-    const [events, setEvents] = useState<(Event & User)[]>([]);
+    const [events, setEvents] = useState<(Event & {producer: User})[]>([]);
     const [producer, setProducer] = useState<number|undefined>(undefined);
 
     const fetchEvents = async () => {

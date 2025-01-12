@@ -20,6 +20,7 @@ model Event {
   description String 
   date DateTime
   location String
+  image String @unique
   producer_id Int
 
   producer User @relation(fields: [producer_id], references: [id])
@@ -29,7 +30,7 @@ model User {
   id Int @id @default(autoincrement())
   email String @unique
   name String
-
+  username String? @unique
   roles UserRole[]
   events Event[]
 }

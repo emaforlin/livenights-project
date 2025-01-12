@@ -28,7 +28,7 @@ const EventGrid = () => {
                     </div>
                   </div>
                   <div className="p-4">
-                    <p className="text-sm text-slate-500">{event.producer.username}</p>
+                    <p className="text-sm text-slate-500">{event.producer?.name}</p>
                     <h3 className="text-xl font-semibold text-gray-800 group-hover:text-orange-400 transition-colors duration-300">
                       {event.title}
                     </h3>

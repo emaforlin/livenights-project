@@ -3,19 +3,19 @@
 import { DataTable } from "@/components/ui/data-table";
 import { columns } from "../types/columns";
 import { useEventContext } from "@/context/EventContext";
+import { summarizeEvents } from "@/app/lib/utils";
+import { useSession } from "next-auth/react";
 
 export const EventsTable = () => {
-  const { events, selectProducer } = useEventContext(); 
+  const { events, setProducer } = useEventContext(); 
+  const { data: session, status } = useSession();
 
-  selectProducer("3");
+  if (status === "loading") return <div className="text-sm text-center">Cargando</div>
   
+
+  setProducer(session?.user.id as number);
+
   return (
-    <div className="m-6 border rounded flex flex-col items-center">
-      <div className="flex justify-center w-full overflow-x-auto">
-        <div className="flex justify-center max-w-4xl w-full">
-          <DataTable columns={columns} data={events}/>
-        </div>
-      </div>
-    </div>
+    <DataTable columns={columns} data={summarizeEvents(events)}/>
   )
 }

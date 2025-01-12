@@ -1,15 +1,11 @@
 "use client";
  
+import { EventSummary } from "@/types/event";
 import { ColumnDef } from "@tanstack/react-table"
 
-export type Event = {
-    id: string;
-    title: string;
-    date: string;
-    soldTickets: number;
-}
 
-export const columns: ColumnDef<Event>[] = [
+
+export const columns: ColumnDef<EventSummary>[] = [
     {
         accessorKey: "id",
         header: "#"

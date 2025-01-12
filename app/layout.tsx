@@ -10,7 +10,6 @@ export const metadata: Metadata = {
 };
 
 
-
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
   <html>
@@ -21,7 +20,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <SidebarTrigger />
             {children}
         </SidebarProvider>
-      </SessionProvider>
+      </SessionProvider>  
     </body>
   </html>
   )

@@ -1,5 +1,7 @@
-import { User, Event } from "@prisma/client";
 
-export type FullEvent = Event & {
-  producer: User
+export type EventSummary = {
+    id: string;
+    title: string;
+    date: string;
+    soldTickets: number;
 }

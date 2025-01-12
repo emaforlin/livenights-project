@@ -3,15 +3,11 @@ import { ReactNode } from 'react'
 
 const PermissionWrapper = ({ allowedRoles, children } : { allowedRoles: string[], children: ReactNode }) => {
     const { data: session } =  useSession();
-
+    console.log(session);
     const userRoles = session?.user.role.split(" ") || ["GUEST"];
 
-
-
-
-    
     console.log("Roles from token ->", userRoles);
-    console.log("Allowed roles ->", allowedRoles);
+    // console.log("Allowed roles ->", allowedRoles);
     if (!allowedRoles.some((role) => userRoles.includes(role))) {
         return null;
     }

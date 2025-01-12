@@ -1,6 +1,5 @@
 import React from 'react'
-import { useEventContext } from '@/context/EventContext'
-import EventsTable from '@/components/EventsTable'
+import { EventsTable } from './components/EventsTable'
 
 
 const Dashboard = () => {
@@ -8,7 +7,7 @@ const Dashboard = () => {
     <div className="w-full">
       <div className="mx-4 flex-grow">
         <h1 className="m-4 text-3xl text-center">Eventos</h1>
-        <EventsTable />
+          <EventsTable/>
       </div>
     </div>
   )

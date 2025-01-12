@@ -27,8 +27,8 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
         async session({ session, token }) {
             if (token?.role) {
                 session.user.role = token.role;
+                session.user.id = token.userId;
             }
-
             return session;
         },
 
@@ -45,8 +45,14 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
                     .join(" ");
 
                 token.role = userRoles || "GUEST";
+
+                token.userId = dbUser?.id;
             }
             return token;
         }
-    }
+    },
+    secret: process.env.AUTH_SECRET!,
+    session: {
+        strategy: "jwt",
+    },
 });

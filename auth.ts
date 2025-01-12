@@ -12,14 +12,11 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
             await db.user.upsert({
                 where: { email },
                 update: {},
-                create: { email, name, roles: {
-                    create: {
-                        role: {
-                            connect: { name: "USER" }
-                            }
-                        }
-                    }
-                }
+                create: { 
+                    email, name, role: {
+                    connect: {name: "USER"},
+                    },
+                },
             });
             return true;
         },
@@ -34,17 +31,15 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
 
         async jwt({ token, user }) {
             if (user) {
-                const dbUser = await db.user.findUnique({where: {email: user.email! }, include: {
-                    roles: {
-                        include: {role: true}
+                const dbUser = await db.user.findUnique({
+                    where: {email: user.email! }, 
+                    include: {
+                        role: true
                     }
-                }});
+                });
                 
-                const userRoles = dbUser?.roles
-                    .map(userRole => userRole.role.name)
-                    .join(" ");
-
-                token.role = userRoles || "GUEST";
+        
+                token.role = dbUser?.role.name || "GUEST";
 
                 token.userId = dbUser?.id;
             }

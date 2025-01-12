@@ -3,15 +3,15 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 interface RoleContextType {
-    roles: string[];
+    role: string;
 }
 
 const RoleContext = createContext<RoleContextType | undefined>(undefined);
 
 
-export const RoleProvider = ({ roles, children } : { roles: string[], children: ReactNode }) => {     
+export const RoleProvider = ({ role, children } : { role: string, children: ReactNode }) => {     
     return (
-        <RoleContext.Provider value={{ roles }}>
+        <RoleContext.Provider value={{ role }}>
             {children}
         </RoleContext.Provider>
     )

@@ -10,11 +10,11 @@ export const getSession = cache(async () => {
     return session;
 })
 
-export const getUserRoles = cache(async () => {
+export const getUserRole = cache(async () => {
     const session = await auth();
     
     if (!session) {
-        return [];
+        return null;
     }
 
     try {
@@ -29,7 +29,7 @@ export const getUserRoles = cache(async () => {
         return dbUser?.role.name
     } catch (error) {
         console.log("failed to fetch user roles");
-        return [];
+        return null;
     }
 
 })

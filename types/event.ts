@@ -1,11 +1,7 @@
-import { ProducerType } from "./producer";
 
-export type EventType = {
-    id: number;
-    uid: string
+export type EventSummary = {
+    id: string;
     title: string;
-    description: string;
-    date: Date;
-    location: string;
-    producer: ProducerType
-  }
+    date: string;
+    soldTickets: number;
+}

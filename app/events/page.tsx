@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react'
 import EventGrid from './components/EventGrid'
+import { SidebarProvider } from '@/components/ui/sidebar'
+import { AppSidebar } from '@/components/app-sidebar'
 
 
 const EventsPage = () => {

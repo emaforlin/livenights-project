@@ -5,14 +5,15 @@ import { useEventContext } from '@/context/EventContext';
 import Link from 'next/link';
 import { Calendar, DollarSign, MapPin } from 'lucide-react';
 import { date2text } from '@/utils/date';
+import { Event } from '@prisma/client';
 
 const EventGrid = () => {
     const { events } = useEventContext();
     return (
         <div className="flex justify-center">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12">
-            {events.map((event: { id: string; title: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; date: string | number | Date; location: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; }) => (
-                <div className="w-72 shrink-0 bg-slate-100 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
+            {events.map((event) => (
+                <div key={event.id} className="w-72 shrink-0 bg-slate-100 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
                 <Link href={"/events/"+event.id} className="group block">
                   <div className="relative overflow-hidden">
                     {/* <Image
@@ -27,7 +28,7 @@ const EventGrid = () => {
                     </div>
                   </div>
                   <div className="p-4">
-                    <p className="text-sm text-slate-500">{event.producer.username}</p>
+                    <p className="text-sm text-slate-500">{event.producer?.name}</p>
                     <h3 className="text-xl font-semibold text-gray-800 group-hover:text-orange-400 transition-colors duration-300">
                       {event.title}
                     </h3>

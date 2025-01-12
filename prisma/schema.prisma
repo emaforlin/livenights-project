@@ -29,19 +29,19 @@ model Event {
 model User {
   id Int @id @default(autoincrement())
   email String @unique
+  name String
   username String? @unique
-  firstname String
-  lastname String
-
   roles UserRole[]
   events Event[]
 }
 
 model Role {
   id Int @id @default(autoincrement())
-  type String @unique
+  name String @unique
 
   users UserRole[]
+
+  RolePermission RolePermission[]
 }
 
 model UserRole {
@@ -52,4 +52,20 @@ model UserRole {
   role Role @relation(fields: [role_id], references: [id])
   
   @@unique([user_id, role_id])
+}
+
+model Permission {
+  id Int @id @default(autoincrement())
+  name String @unique
+
+  RolePermission RolePermission[]
+}
+
+model RolePermission {
+  id Int @id @default(autoincrement())
+  role_id Int
+  permission_id Int
+
+  role Role @relation(fields: [role_id], references: [id])
+  permission Permission @relation(fields: [permission_id], references: [id])
 }

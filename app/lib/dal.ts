@@ -1,11 +1,7 @@
 import "server-only";
 
-import {getToken} from "next-auth/jwt"
-import { NextRequest, NextResponse } from "next/server";
 import { cache } from "react";
 import { auth } from "@/auth";
-import { redirect } from "next/dist/server/api-utils";
-import { env } from "process";
 import { db } from "@/db/db";
 
 export const getSession = cache(async () => {
@@ -22,15 +18,15 @@ export const getUserRoles = cache(async () => {
     }
 
     try {
-        const dbUser = await db.user.findUnique({where: {email: session.user.email! }, include: {
-            roles: {
-                include: {role: true}
-                    }
-                }});
+        const dbUser = await db.user.findUnique({
+            where: {
+                email: session?.user?.email! }, 
+                include: {
+                    role: true,
+                }
+            });
          
-        const userRoles = dbUser?.roles.map(userRole => userRole.role.name);
-
-        return userRoles || [""];
+        return dbUser?.role.name
     } catch (error) {
         console.log("failed to fetch user roles");
         return [];

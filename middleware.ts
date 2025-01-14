@@ -5,9 +5,10 @@ export async function middleware(req: NextRequest) {
     const token = await getToken({ req, secret: process.env.AUTH_SECRET });
 
     const isOnDashboard = req.nextUrl.pathname.startsWith("/dashboard");
+    const isOnSettings = req.nextUrl.pathname.startsWith("/settings");
 
     if (!token) {
-        return NextResponse.redirect(new URL("/", req.url));
+        return NextResponse.redirect(new URL("/login", req.url));
     }
 
     const roles = (token.role as string).split(" ");
@@ -16,9 +17,16 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL("/events", req.url));
     }
 
+    if (!token && isOnSettings) {
+        return NextResponse.redirect(new URL("/login", req.url));
+    }
+
     return NextResponse.next();   
 }
 
 export const config =  {
-    matcher: ["/dashboard/:path*"],
+    matcher: [
+        "/dashboard/:path*",
+        "/settings/:path*"
+    ],
 }

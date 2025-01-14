@@ -1,6 +1,6 @@
-import { db } from "@/db/db";
+import { db } from "@/app/lib/db";
 import { ErrorResponse, GenericResponse } from "@/utils/responses";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
     const userEmail = req.nextUrl.searchParams.get("email");

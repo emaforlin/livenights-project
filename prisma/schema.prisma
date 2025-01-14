@@ -31,27 +31,18 @@ model User {
   email String @unique
   name String
   username String? @unique
-  roles UserRole[]
+  role_id Int 
+  role Role @relation(fields: [role_id], references: [id])
   events Event[]
 }
 
 model Role {
   id Int @id @default(autoincrement())
   name String @unique
-
-  users UserRole[]
-
-  RolePermission RolePermission[]
-}
-
-model UserRole {
-  id Int @id @default(autoincrement())
-  user_id Int
-  role_id Int
-  user User @relation(fields: [user_id], references: [id])
-  role Role @relation(fields: [role_id], references: [id])
   
-  @@unique([user_id, role_id])
+  RolePermission RolePermission[]
+
+  User User[]
 }
 
 model Permission {

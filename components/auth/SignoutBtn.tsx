@@ -1,11 +1,15 @@
 import { signOutAction } from "@/lib/actions"
+import { LogOut } from "lucide-react"
 
 const SignOut = () => {
   return (
-    <form action={signOutAction}>
-        <button type="submit"
-          className="hover">Cerrar Sesion</button>
-    </form>
+    <>
+      <LogOut/>
+      <form action={signOutAction}>
+          <button type="submit"
+            className="hover">Cerrar Sesion</button>
+      </form>
+    </>
   )
 }
 

@@ -28,6 +28,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import SignoutBtn from "./auth/SignoutBtn"
+import SettingsBtn from "./SettingsBtn"
 
 export function NavUser({
   user,
@@ -86,13 +87,11 @@ export function NavUser({
                 Mi Cuenta
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Settings />
-                Configuracion
+                <SettingsBtn />
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <LogOut />
               <SignoutBtn />
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
-import { db } from "@/db/db";
+import { prisma } from "@/app/lib/db";
 import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { Event, User } from "@prisma/client";
-import { getSession, getUserRoles } from "@/app/lib/dal";
+import { getSession } from "@/app/lib/dal";
 
 export async function GET(req: NextRequest) {
     const producerId = req.nextUrl.searchParams.get("producer");
@@ -10,12 +10,12 @@ export async function GET(req: NextRequest) {
     try {
         let events: any;
         if (producerId) {
-            events = await db.event.findMany({
+            events = await prisma.event.findMany({
                 where: { producer_id: parseInt(producerId) },
                 include: { producer: true } 
             });
         } else {
-            events = await db.event.findMany({ 
+            events = await prisma.event.findMany({ 
                 include: { producer: true } 
             });
         }
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
         
 
 
-        const newEvent = await db.event.create({
+        const newEvent = await prisma.event.create({
             data: {
                 title: reqBody.title,
                 description: reqBody.description,

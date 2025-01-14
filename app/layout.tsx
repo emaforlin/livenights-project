@@ -3,6 +3,8 @@ import "./globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SessionProvider } from "next-auth/react";
+import { RoleProvider } from "@/context/RoleContext";
+import { getUserRole } from "./lib/dal";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -10,17 +12,20 @@ export const metadata: Metadata = {
 };
 
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default async function Layout({ children }: { children: React.ReactNode }) {
+  const role = await getUserRole();
   return (
   <html>
     <body className="h-full w-full">
-      <SessionProvider>
-        <SidebarProvider>
-          <AppSidebar />
-            <SidebarTrigger />
-            {children}
-        </SidebarProvider>
-      </SessionProvider>  
+      <RoleProvider role={role}>
+        <SessionProvider>
+            <SidebarProvider>
+              <AppSidebar />
+                <SidebarTrigger />
+                {children}
+            </SidebarProvider>
+          </SessionProvider>
+        </RoleProvider>
     </body>
   </html>
   )

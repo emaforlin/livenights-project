@@ -1,12 +1,8 @@
 import "server-only";
 
-import {getToken} from "next-auth/jwt"
-import { NextRequest, NextResponse } from "next/server";
 import { cache } from "react";
 import { auth } from "@/auth";
-import { redirect } from "next/dist/server/api-utils";
-import { env } from "process";
-import { db } from "@/db/db";
+import { prisma } from "@/app/lib/db";
 
 export const getSession = cache(async () => {
     const session = await auth();
@@ -14,26 +10,22 @@ export const getSession = cache(async () => {
     return session;
 })
 
-export const getUserRoles = cache(async () => {
+export const getUserRole = cache(async () => {
     const session = await auth();
     
-    if (!session) {
-        return [];
-    }
-
     try {
-        const dbUser = await db.user.findUnique({where: {email: session.user.email! }, include: {
-            roles: {
-                include: {role: true}
-                    }
-                }});
+        const dbUser = await prisma.user.findUnique({
+            where: {
+                email: session?.user?.email! }, 
+                include: {
+                    role: true,
+                }
+            });
          
-        const userRoles = dbUser?.roles.map(userRole => userRole.role.name);
-
-        return userRoles || [""];
+        return dbUser?.role?.name || "GUEST";
     } catch (error) {
         console.log("failed to fetch user roles");
-        return [];
+        return "GUEST";
     }
 
 })

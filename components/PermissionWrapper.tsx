@@ -1,14 +1,15 @@
+"use client";
+import { getUserRole } from '@/app/lib/dal';
+import { useRole } from '@/context/RoleContext';
 import { useSession } from 'next-auth/react'
 import { ReactNode } from 'react'
 
 const PermissionWrapper = ({ allowedRoles, children } : { allowedRoles: string[], children: ReactNode }) => {
     const { data: session } =  useSession();
-    console.log(session);
-    const userRoles = session?.user.role.split(" ") || ["GUEST"];
 
-    console.log("Roles from token ->", userRoles);
-    // console.log("Allowed roles ->", allowedRoles);
-    if (!allowedRoles.some((role) => userRoles.includes(role))) {
+    const {role} = useRole()
+
+    if (!allowedRoles.includes(role)) {
         return null;
     }
     return children;

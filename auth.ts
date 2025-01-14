@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github"
-import { db } from "./db/db";
+import { prisma } from "./app/lib/db";
 
 export const { handlers, signIn, signOut, auth} = NextAuth({
     providers: [GitHub],
@@ -9,17 +9,14 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
             const email = user.email!;
             const name = user.name!;
 
-            await db.user.upsert({
+            await prisma.user.upsert({
                 where: { email },
                 update: {},
-                create: { email, name, roles: {
-                    create: {
-                        role: {
-                            connect: { name: "USER" }
-                            }
-                        }
-                    }
-                }
+                create: { 
+                    email, name, role: {
+                    connect: {name: "USER"},
+                    },
+                },
             });
             return true;
         },
@@ -34,17 +31,15 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
 
         async jwt({ token, user }) {
             if (user) {
-                const dbUser = await db.user.findUnique({where: {email: user.email! }, include: {
-                    roles: {
-                        include: {role: true}
+                const dbUser = await prisma.user.findUnique({
+                    where: {email: user.email! }, 
+                    include: {
+                        role: true
                     }
-                }});
+                });
                 
-                const userRoles = dbUser?.roles
-                    .map(userRole => userRole.role.name)
-                    .join(" ");
-
-                token.role = userRoles || "GUEST";
+        
+                token.role = dbUser?.role.name || "GUEST";
 
                 token.userId = dbUser?.id;
             }

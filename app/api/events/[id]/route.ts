@@ -1,6 +1,5 @@
-import { prisma } from "@/db/db";
+import { prisma } from "@/app/lib/db";
 import { ErrorResponse, GenericResponse } from "@/utils/responses";
-import { Event } from "@prisma/client";
 
 export async function DELETE(request: Request, 
     { params }: { params: Promise<{ id: string }> }

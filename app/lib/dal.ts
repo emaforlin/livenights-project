@@ -2,7 +2,7 @@ import "server-only";
 
 import { cache } from "react";
 import { auth } from "@/auth";
-import { db } from "@/db/db";
+import { prisma } from "@/app/lib/db";
 
 export const getSession = cache(async () => {
     const session = await auth();
@@ -13,12 +13,8 @@ export const getSession = cache(async () => {
 export const getUserRole = cache(async () => {
     const session = await auth();
     
-    if (!session) {
-        return null;
-    }
-
     try {
-        const dbUser = await db.user.findUnique({
+        const dbUser = await prisma.user.findUnique({
             where: {
                 email: session?.user?.email! }, 
                 include: {
@@ -26,10 +22,10 @@ export const getUserRole = cache(async () => {
                 }
             });
          
-        return dbUser?.role.name
+        return dbUser?.role?.name || "GUEST";
     } catch (error) {
         console.log("failed to fetch user roles");
-        return null;
+        return "GUEST";
     }
 
 })

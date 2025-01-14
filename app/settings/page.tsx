@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import React from 'react'
 import { getSession, getUserRole } from '../lib/dal';
 import { UpgradeRoleForm } from '@/components/UpgradeRoleForm';
+import { RoleProvider } from '@/context/RoleContext';
 
 const handleBtnClick = async () => {
     const session = await getSession();
@@ -34,6 +35,7 @@ const Settings = async () => {
 
 
     return (
+        <RoleProvider role={role}>
         <Card className="mx-auto text-center mt-10 w-1/3 h-auto">
             <div className="flex flex-col mx-4">
                 <h1 className="justify-center text-2xl my-4 font-bold">CONFIGURACION</h1>
@@ -44,6 +46,7 @@ const Settings = async () => {
                 </PermissionWrapper>
             </div>
         </Card>
+        </RoleProvider>
   )
 }
 

@@ -3,7 +3,7 @@
 import React from 'react'
 import { useEventContext } from '@/context/EventContext';
 import Link from 'next/link';
-import { Calendar, DollarSign, MapPin } from 'lucide-react';
+import { Calendar, MapPin } from 'lucide-react';
 import { date2text } from '@/utils/date';
 import { Event } from '@prisma/client';
 

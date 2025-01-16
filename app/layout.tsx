@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { SessionProvider } from "next-auth/react";
 import { RoleProvider } from "@/context/RoleContext";
 import { getUserRole } from "./lib/dal";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -23,6 +24,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
               <AppSidebar />
                 <SidebarTrigger />
                 {children}
+                <Toaster />
             </SidebarProvider>
           </SessionProvider>
         </RoleProvider>

@@ -36,6 +36,7 @@ export async function PATCH(req: NextRequest,
         const updatedUser = await prisma.user.update({
             where: {id: parseInt(userId)},
             data: {
+                username: reqBody.username,
                 role: {
                     connect: {
                         name: reqBody.role

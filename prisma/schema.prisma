@@ -34,6 +34,8 @@ model User {
   role_id Int 
   role Role @relation(fields: [role_id], references: [id])
   events Event[]
+
+  Image Image[]
 }
 
 model Role {
@@ -59,4 +61,14 @@ model RolePermission {
 
   role Role @relation(fields: [role_id], references: [id])
   permission Permission @relation(fields: [permission_id], references: [id])
+}
+
+model Image {
+  id Int @id @default(autoincrement())
+  filename String @unique
+  file Bytes 
+  in_use Boolean @default(false)
+  last_used DateTime @default(now())
+  owner_id Int
+  owner User @relation(fields: [owner_id], references: [id])
 }

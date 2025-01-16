@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { useEventContext } from '@/context/EventContext';
 import { Event } from '@prisma/client';
+import Image from "next/image";
 
 
 function SingleEvent({ params }: { params: Promise<{eventId: string }>}) {
@@ -28,9 +29,12 @@ function SingleEvent({ params }: { params: Promise<{eventId: string }>}) {
     return (
         <div className="flex flex-col md:flex-row m-3 md:m-5 gap-6">
           <div className="w-full md:w-1/2 p-2 md:p-4">
-            <div className="bg-gray-200 w-full aspect-square rounded-lg shadow-lg">
-              <p className="flex justify-center items-center h-full">IMAGEN</p>
-            </div>
+            <Image 
+              alt=''
+              src={"/api/images/"+event.image} 
+              width={800} 
+              height={800}
+            />
           </div>
           
           <div className="w-full md:w-1/2 p-2 md:p-4 flex flex-col min-h-[500px] min-w-[50%]">

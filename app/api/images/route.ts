@@ -30,7 +30,6 @@ export async function POST(req: NextRequest) {
     const rawFile = formData.get("file") as File;
     const eventUid = formData.get("event") as string;
 
-
     try {
         const session = await getSession();
         if (!session) {
@@ -59,8 +58,9 @@ export async function POST(req: NextRequest) {
 
         const dbImage = await prisma.image.create({
             data: {
-                filename: `${producerUsername?.username}_${validEventUid!}.${fileExt}`,
                 file: imgBlob,
+                filetype: validImgFile.type,
+                filename: `${producerUsername?.username}_${validEventUid!}.${fileExt}`,
                 owner: {
                     connect: {
                         id: parseInt(userId)

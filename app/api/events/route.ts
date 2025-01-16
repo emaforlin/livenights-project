@@ -36,24 +36,23 @@ export async function POST(req: NextRequest) {
         if (!session) {
             return ErrorResponse("unauthorized", 401);
         }
-        console.log(session);
-
-        const reqBody = await req.json()
+        
+        const reqBody = await req.json();
         const expectedFields: (keyof Event)[] = ["title", "description", "producer_id", "date", "location"]
         const missingFields = expectedFields.filter(f => !(f in reqBody))
         
         if (missingFields.length > 0) {
+            console.log("missing fields:",missingFields);
             return ErrorResponse(`error missing fields: ${missingFields}`, 400);
         }
         
-
-
         const newEvent = await prisma.event.create({
             data: {
                 title: reqBody.title,
                 description: reqBody.description,
                 date: new Date(reqBody.date),
                 location: reqBody.location,
+                image: reqBody.title+".jpg",
                 producer: {
                     connect: {
                         id: parseInt(reqBody.producer_id)

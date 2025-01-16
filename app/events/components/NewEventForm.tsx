@@ -99,12 +99,16 @@ export function NewEventForm() {
                 const userId = session.user?.id;
                 if (!userId) throw new Error("Usuario no encontrado");
 
+                const file = mainForm.getValues("image");
+                const filename = values.title.replaceAll(" ","_") + "." + file.type.split("/")[1];
+
                 const data: Partial<Event> = {
                     title: values.title,
                     date: values.datetime,
                     description: values.description,
                     location: values.location,
-                    producer_id: parseInt(userId)
+                    producer_id: parseInt(userId),
+                    image: filename,
                 };
 
                 
@@ -121,11 +125,10 @@ export function NewEventForm() {
 
                 const event: Event = await res1.json();
 
-                const file = mainForm.getValues("image");
                     
                 const formData = new FormData();
                 formData.append("file", file);
-                formData.append("event", event.uid);
+                formData.append("filename", filename);
 
                 await fetch("/api/images", {
                     method: "POST",

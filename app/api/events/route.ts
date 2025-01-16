@@ -38,12 +38,19 @@ export async function POST(req: NextRequest) {
         }
         
         const reqBody = await req.json();
-        const expectedFields: (keyof Event)[] = ["title", "description", "producer_id", "date", "location"]
+        const expectedFields: (keyof Event)[] = ["title", "description", "producer_id", "date", "location", "image"]
         const missingFields = expectedFields.filter(f => !(f in reqBody))
         
         if (missingFields.length > 0) {
             console.log("missing fields:",missingFields);
+         
             return ErrorResponse(`error missing fields: ${missingFields}`, 400);
+        }
+
+        const dbProducer = await prisma.user.findUnique({where: {id: reqBody.producer_id}});
+
+        if  (!dbProducer) {
+            return ErrorResponse("bad user input", 400);
         }
         
         const newEvent = await prisma.event.create({
@@ -52,7 +59,7 @@ export async function POST(req: NextRequest) {
                 description: reqBody.description,
                 date: new Date(reqBody.date),
                 location: reqBody.location,
-                image: reqBody.title+".jpg",
+                image: `${dbProducer?.username}_${reqBody.image!}`,
                 producer: {
                     connect: {
                         id: parseInt(reqBody.producer_id)

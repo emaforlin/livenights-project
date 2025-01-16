@@ -5,7 +5,7 @@ import { useEventContext } from '@/context/EventContext';
 import Link from 'next/link';
 import { Calendar, MapPin } from 'lucide-react';
 import { date2text } from '@/utils/date';
-import { Event } from '@prisma/client';
+import Image from 'next/image';
 
 const EventGrid = () => {
     const { events } = useEventContext();
@@ -16,16 +16,13 @@ const EventGrid = () => {
                 <div key={event.id} className="w-72 shrink-0 bg-slate-100 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
                 <Link href={"/events/"+event.id} className="group block">
                   <div className="relative overflow-hidden">
-                    {/* <Image
+                    <Image
                       className="aspect-square rounded-t-xl group-hover:scale-105 transition-transform duration-300"
-                      src={event.imageURL}
+                      src={"/api/images/"+event.image}
                       width={288}
                       height={288}
                       alt={"Cover of an event called " + event.title + " produced by "+event.producer}
-                    /> */}
-                    <div className="w-[288px] h-[288px] bg-slate-300">
-                      <p className="flex justify-center items-center h-full text-3xl text-gray-600">IMAGEN</p>
-                    </div>
+                    />
                   </div>
                   <div className="p-4">
                     <p className="text-sm text-slate-500">{event.producer?.name}</p>

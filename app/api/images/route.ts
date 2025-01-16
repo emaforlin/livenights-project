@@ -21,15 +21,14 @@ const fileSchema = z.custom<File>((file) => {
     message: "Archivo invalido",
 });
 
-const eventUidSchema = z.string();
+const stringSchema = z.string();
 
 
 export async function POST(req: NextRequest) {
     const formData = await req.formData()
 
     const rawFile = formData.get("file") as File;
-    const eventUid = formData.get("event") as string;
-
+    const rawFileName = formData.get("filename") as string;
 
     try {
         const session = await getSession();
@@ -42,25 +41,24 @@ export async function POST(req: NextRequest) {
             return ErrorResponse("unauthorized", 401);
         }
 
-        const producerUsername = await prisma.user.findUnique({
+        const producer = await prisma.user.findUnique({
             where: {id: parseInt(userId)},
         })
 
-        if (!producerUsername) {
+        if (!producer) {
             return ErrorResponse("producer data not found", 404);
         }
 
         const validImgFile = fileSchema.parse(rawFile);
         const imgBlob = await validImgFile.bytes();
 
-        const fileExt = validImgFile.type.split("/")[1];
-
-        const validEventUid = eventUidSchema.parse(eventUid);
+        const validFilename = stringSchema.parse(rawFileName);
 
         const dbImage = await prisma.image.create({
             data: {
-                filename: `${producerUsername?.username}_${validEventUid!}.${fileExt}`,
                 file: imgBlob,
+                filetype: validImgFile.type,
+                filename: `${producer?.username}_${validFilename!}`,
                 owner: {
                     connect: {
                         id: parseInt(userId)

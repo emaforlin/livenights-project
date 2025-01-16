@@ -16,19 +16,21 @@ export const metadata: Metadata = {
 export default async function Layout({ children }: { children: React.ReactNode }) {
   const role = await getUserRole();
   return (
-  <html>
-    <body className="h-full w-full">
-      <RoleProvider role={role}>
-        <SessionProvider>
-            <SidebarProvider>
-              <AppSidebar />
+    <html>
+      <body className="h-full w-full">
+        <RoleProvider role={role}>
+          <SessionProvider>
+              <SidebarProvider>
+                <div className="flex h-screen">
+                  <AppSidebar />
+                </div>
                 <SidebarTrigger />
                 {children}
                 <Toaster />
-            </SidebarProvider>
-          </SessionProvider>
-        </RoleProvider>
-    </body>
-  </html>
+              </SidebarProvider>
+            </SessionProvider>
+          </RoleProvider>
+      </body>
+    </html>
   )
 }

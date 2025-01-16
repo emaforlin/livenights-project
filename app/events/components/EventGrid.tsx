@@ -11,9 +11,11 @@ const EventGrid = () => {
     const { events } = useEventContext();
     return (
         <div className="flex justify-center">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {events.map((event) => (
-                <div key={event.id} className="w-72 shrink-0 bg-slate-100 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                <div 
+                  key={event.id} 
+                  className="w-full max-w-xs bg-slate-100 rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden">
                 <Link href={"/events/"+event.id} className="group block">
                   <div className="relative overflow-hidden">
                     <Image

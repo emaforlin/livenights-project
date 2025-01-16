@@ -6,15 +6,22 @@ export async function middleware(req: NextRequest) {
 
     const isOnDashboard = req.nextUrl.pathname.startsWith("/dashboard");
     const isOnSettings = req.nextUrl.pathname.startsWith("/settings");
+    const isOnUserDashboard = req.nextUrl.pathname.startsWith("/user");
+
 
     if (!token) {
         return NextResponse.redirect(new URL("/login", req.url));
     }
 
     const roles = (token.role as string).split(" ");
+    console.log("Roles:", roles);
 
     if (isOnDashboard && !roles.includes("PRODUCER")) {
-        return NextResponse.redirect(new URL("/events", req.url));
+        return NextResponse.redirect(new URL("/", req.url));
+    }
+
+    if (isOnUserDashboard && !roles.includes("USER")) {
+        return NextResponse.redirect(new URL("/", req.url));
     }
 
     if (!token && isOnSettings) {
@@ -27,6 +34,7 @@ export async function middleware(req: NextRequest) {
 export const config =  {
     matcher: [
         "/dashboard/:path*",
-        "/settings/:path*"
+        "/settings/:path*",
+        "/user/:path*"
     ],
 }

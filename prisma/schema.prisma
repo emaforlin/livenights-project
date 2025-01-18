@@ -13,6 +13,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model TicketBatch {
+  id Int @id @default(autoincrement())
+  name String @unique
+  price Float
+  quantity Int
+  start_date DateTime? 
+  end_date DateTime?
+  active Boolean @default(false)
+  event_id Int
+
+  event Event @relation(fields: [event_id], references: [id])
+}
+
 model Event {
   id Int @id @default(autoincrement())
   uid String @default(uuid())
@@ -24,6 +37,8 @@ model Event {
   producer_id Int
 
   producer User @relation(fields: [producer_id], references: [id])
+
+  TicketBatch TicketBatch[]
 }
 
 model User {

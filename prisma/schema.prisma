@@ -15,11 +15,11 @@ datasource db {
 
 model TicketBatch {
   id Int @id @default(autoincrement())
-  name String @unique
+  name String
   price Float
   quantity Int
-  start_date DateTime? 
-  end_date DateTime?
+  start_date DateTime
+  end_date DateTime
   active Boolean @default(false)
   event_id Int
 

@@ -20,17 +20,17 @@ const ticketBatchSchema = z.object({
         .gt(0, { message: "number out of range" }),
 
     start_date: z
-        .union([z.date(), z.null(), z.undefined()])
-        .optional()
-        .refine((date) => !date || date >= new Date(), { message: "invalid date" })
-        .transform((date) => date ?? null),
+        .preprocess((value) => (typeof value === "string" ? new Date(value) : value), z.date())
+        .refine((date) => { 
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Establece la hora a las 00:00 para comparar solo las fechas
+            return date >= today;
+        }, { message: "date must to be on the future" }),
 
     end_date: z
-        .union([z.date(), z.null(), z.undefined()])
-        .optional()
-        .refine((date) => !date || date >= new Date(), { message: "invalid date" })
-        .transform((date) => date ?? null),
-
+        .preprocess((value) => (typeof value === "string" ? new Date(value) : value), z.date())
+        .refine((date) => !date || date > new Date(), { message: "date must to be on the future" }),
+        
     active: z.boolean().optional().default(false),
 
     event_id: z
@@ -82,6 +82,7 @@ export async function POST(req: NextRequest) {
         return GenericResponse(dbTB, 201);
 
     } catch (error: any) {
+        console.log(error.message);
         return ErrorResponse(error.message, 400);
     }
 }

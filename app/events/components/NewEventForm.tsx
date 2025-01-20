@@ -22,7 +22,6 @@ import { useSession } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
 import { VisibilityWrapper } from "@/components/VisibilityWrapper"
 import { useState } from "react";
-import { format } from "date-fns";
 
 const fileSchema = z.custom<File>((file) => {
     if (!(file instanceof File)) return false;
@@ -63,6 +62,7 @@ const creationFormSchema = z.object({
     location: z
         .string({message: "Campo ubicacion requerido"}).min(5, {message: "Campo ubicacion muy corto."})
         .max(200, {message: "Ubicacion demasiado extensa."}),
+    
     image: fileSchema,
 })
 
@@ -82,16 +82,6 @@ export function NewEventForm() {
             image: undefined,
         },
     });
-
-    async function handleImageUpload() {
-        const file = mainForm.getValues("image");
-        const data = new FormData();
-        data.append("file", file);
-        await fetch("/api/images", {
-            method: "POST",
-            body: data,
-        })
-    }
 
     async function onSubmit(values: z.infer<typeof creationFormSchema>) {
         try {
@@ -123,8 +113,6 @@ export function NewEventForm() {
                     throw new Error("Falló la creación del evento");
                 }
 
-                const event: Event = await res1.json();
-
                     
                 const formData = new FormData();
                 formData.append("file", file);
@@ -154,124 +142,123 @@ export function NewEventForm() {
         }
     }
 
-
-    
-
     return (<>
         <Card className="px-6 py-4 w-96">
-                <h1 className="text-2xl text-center font-bold mb-4">Organiza un nuevo evento!</h1>
-                <Form {...mainForm}>
-                    <form onSubmit={ mainForm.handleSubmit(onSubmit) } className="space-y-4">
-                        <div className="my-10 space-y-5">
-                            <VisibilityWrapper visible={ stage===0 }>
-                                <FormField
-                                    control={ mainForm.control }
-                                    name="title"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Título</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Fiesta de la agricultura" {...field} />
-                                            </FormControl>
-                                            <FormDescription>
-                                                Usa un título distintivo para que tu evento sea encontrado facilmente.
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+            <h1 className="text-2xl text-center font-bold mb-4">Organiza un nuevo evento!</h1>
+            <Form {...mainForm}>
+                <form onSubmit={ mainForm.handleSubmit(onSubmit) } className="space-y-4">
+                    <div className="my-10 space-y-5">
+                        <VisibilityWrapper visible={ stage === 0 }>
+                            <FormField
+                                control={ mainForm.control }
+                                name="title"
+                                render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Título</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Fiesta de la agricultura" {...field} />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Usa un título distintivo para que tu evento sea encontrado facilmente.
+                                    </FormDescription>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                                <FormField
-                                    control={ mainForm.control}
-                                    name="datetime"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className="block mb-1">Fecha a realizarse</FormLabel>
-                                            <FormControl>
-                                                <DatetimePicker {...field}/>
-                                            </FormControl>
-                                            <FormDescription>
-                                            Elije la fecha de tu evento.
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                            <FormField
+                                control={ mainForm.control}
+                                name="datetime"
+                                render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="block mb-1">Fecha a realizarse</FormLabel>
+                                    <FormControl>
+                                        <DatetimePicker {...field}/>
+                                    </FormControl>
+                                    <FormDescription>
+                                        Elije la fecha de tu evento.
+                                    </FormDescription>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                                <FormField
-                                    control={ mainForm.control}
-                                    name="description"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Descripción</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="La fiesta que celebra el..." {...field} />
-                                            </FormControl>
-                                            <FormDescription>
-                                                Añade una descripción a tu evento.
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                            <FormField
+                                control={ mainForm.control}
+                                name="description"
+                                render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Descripción</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="La fiesta que celebra el..." {...field} />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Añade una descripción a tu evento.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                                )}
+                            />
 
-                                <FormField
-                                    control={ mainForm.control}
-                                    name="location"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Ubicación</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Plaza San Martin, Esperanza, Santa Fe, Argentina" {...field} />
-                                            </FormControl>
-                                            <FormDescription>
-                                                Indica la ubicacion en donde se realizara el evento.
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <Button onClick={ async () => { await mainForm.trigger(["title", "datetime", "description", "location"]) && setStage(1) } }>
-                                        Siguiente
-                                </Button>
-                            </VisibilityWrapper>
-
-                            <VisibilityWrapper visible={stage === 1}>
-                                <FormField
-                                    control={ mainForm.control}
-                                    name="image"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Imagen</FormLabel>
-                                            <FormControl>
-                                                <Input type="file" onChange={(event: any) => {
-                                                    const file: File = event.target.files[0];
-                                                    mainForm.setValue("image", file);
-                                                }} />
-                                            </FormControl>
-                                            <FormDescription>
-                                                Agrega una imagen para mostrar como portada del evento.
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <div className="flex justify-between">
-                                    <Button onClick={ () => setStage(0) }
-                                        className="w-auto text-center justify-start">Atras</Button>
-                                    <Button onClick={ async () => { await mainForm.trigger("image") && setStage(2)} }
-                                        className="w-auto text-center justify-end">Siguiente</Button>
-                                </div>
-                            </VisibilityWrapper>
-                        </div>
-
-                        <VisibilityWrapper visible={ stage === 2}>
-                            <Button type="submit" className="w-full font-bold text-lg">Crear evento</Button>
+                            <FormField
+                                control={ mainForm.control}
+                                name="location"
+                                render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Ubicación</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Plaza San Martin, Esperanza, Santa Fe, Argentina" {...field} />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Indica la ubicacion en donde se realizara el evento.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                                )}
+                            />
+                            <Button onClick={ async () => { await mainForm.trigger(["title", "datetime", "description", "location"]) && setStage(1) } }>
+                                Siguiente
+                            </Button>
                         </VisibilityWrapper>
-                    </form>
-                </Form>
+
+                        <VisibilityWrapper visible={stage === 1}>
+                            <FormField
+                                control={ mainForm.control}
+                                name="image"
+                                render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Imagen</FormLabel>
+                                    <FormControl>
+                                        <Input type="file" onChange={(event: any) => {
+                                            const file: File = event.target.files[0];
+                                            mainForm.setValue("image", file);
+                                            }} 
+                                        />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Agrega una imagen para mostrar como portada del evento.
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                                )}
+                            />
+                            <div className="flex justify-between">
+                                <Button onClick={ () => setStage(0) }
+                                    className="w-auto text-center justify-start">Atras</Button>
+                                <Button onClick={ async () => { await mainForm.trigger("image") && setStage(2)} }
+                                    className="w-auto text-center justify-end">Siguiente</Button>
+                            </div>
+                        </VisibilityWrapper>    
+                    </div>
+
+                    <VisibilityWrapper visible={ stage > 1}>
+                        <p className="text-center bg-gray-100 p-1 rounded-sm">
+                            El evento se publicará automáticamente cuando tenga al menos una <strong>Tanda de Tickets</strong> activa. Puedes gestionar las tandas en <strong>Eventos &gt; Tickets</strong>.
+                        </p>
+                        <Button type="submit" className="w-full h-14 font-bold text-lg">Crear evento</Button>
+                    </VisibilityWrapper>
+                </form>
+            </Form>
         </Card>
-
-
     </>)
 }

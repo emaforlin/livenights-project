@@ -7,7 +7,7 @@ import {
 
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
-import { EventSwitcher } from "@/components/event-switcher"
+import { EventSwitcher } from "@/app/dashboard/tickets/components/EventDropdown"
 import {
   Sidebar,
   SidebarContent,

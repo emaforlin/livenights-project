@@ -63,6 +63,14 @@ const userItems = [
   }
 ]
 
+const guestItems = [
+  {
+    title: "Buscar eventos",
+    url: "/events",
+    icon: Search,
+  }
+]
+
 export function NavMain() {
   
   return (
@@ -147,10 +155,10 @@ export function NavMain() {
         </SidebarMenu>
       </PermissionWrapper>
 
-      <PermissionWrapper allowedRoles={["USER"]}>
+      <PermissionWrapper allowedRoles={["GUEST"]}>
       <SidebarGroupLabel>Seccion Usuario</SidebarGroupLabel>
         <SidebarMenu>
-          {userItems.map((item) => (
+          {guestItems.map((item) => (
             <Collapsible
               key={item.title}
               asChild

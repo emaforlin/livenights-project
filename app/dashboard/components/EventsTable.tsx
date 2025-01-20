@@ -13,7 +13,7 @@ export const EventsTable = () => {
   if (status === "loading") return <div className="text-sm text-center">Cargando</div>
   
 
-  setProducer(session?.user.id as number);
+  setProducer(parseInt(session?.user?.id!));
 
   return (
     <DataTable columns={columns} data={summarizeEvents(events)}/>

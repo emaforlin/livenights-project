@@ -1,4 +1,5 @@
 import { EventProvider } from "@/context/EventContext"
+import { TicketsProvider } from "@/context/TicketsContext"
 
 export default function Layout({
     children,
@@ -6,8 +7,10 @@ export default function Layout({
     children: React.ReactNode
   }) {
     return (
-      <EventProvider>
-        {children}
-      </EventProvider>
+      <TicketsProvider>
+        <EventProvider>
+          {children}
+        </EventProvider>
+      </TicketsProvider>
     )
   }

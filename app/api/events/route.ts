@@ -32,10 +32,10 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
-        const session = await getSession();
-        if (!session) {
-            return ErrorResponse("unauthorized", 401);
-        }
+        // const session = await getSession();
+        // if (!session) {
+        //     return ErrorResponse("unauthorized", 401);
+        // }
         
         const reqBody = await req.json();
         const expectedFields: (keyof Event)[] = ["title", "description", "producer_id", "date", "location", "image"]

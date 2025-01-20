@@ -5,11 +5,17 @@ import React, { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 
-const RedirectBtn = ({href, children}:{href: string, children: ReactNode}) => {
+interface RedirectBtnProps {
+    href: string;
+    children: ReactNode;
+    className?: string;
+}
+
+const RedirectBtn = ({href, children, className}: RedirectBtnProps) => {
     const router = useRouter();
     return (
         <Button onClick={ () => {router.push(href)} }
-            className="my-4 bg-blue-600">
+            className={className||"my-4 bg-blue-600"}>
             {children}
         </Button>
   )

@@ -17,7 +17,6 @@ export const EventProvider = ({ children }: { children: ReactNode }) => {
     const [producer, setProducer] = useState<number|undefined>(undefined);
 
     const fetchEvents = async () => {
-        console.log("DEBUG: fetching all events");
         try {
             const res = await fetch("/api/events");
             if (!res.ok) {

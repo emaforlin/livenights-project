@@ -21,7 +21,7 @@ import Link from "next/link"
 import { useRole } from "@/context/RoleContext"
 import PermissionWrapper from "./PermissionWrapper";
 
-const adminItems = [
+const producerItems = [
   {
     title: "General",
     url: "/dashboard",
@@ -37,6 +37,12 @@ const adminItems = [
     title: "Eventos",
     url: "/dashboard#Events",
     icon: Ticket,
+    items: [
+      {
+        title: "Tickets",
+        url: "/dashboard/tickets"
+      }
+    ]
   },
   {
     title: "Colaboradores",
@@ -66,7 +72,7 @@ export function NavMain() {
       <PermissionWrapper allowedRoles={["PRODUCER"]}> 
         <SidebarGroupLabel>Admin Role</SidebarGroupLabel>
         <SidebarMenu>
-          {adminItems.map((item) => (
+          {producerItems.map((item) => (
             <Collapsible
               key={item.title}
               asChild

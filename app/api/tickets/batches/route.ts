@@ -99,28 +99,7 @@ export async function GET(req: NextRequest) {
             throw new Error("event id required");
         }
 
-        let dbTicketBatches: TicketBatch[];
-
-        if (isActiveParam !== undefined && isActive) {
-            dbTicketBatches = await prisma.ticketBatch.findMany({
-                where: { 
-                    event_id: parseInt(eventId),
-                    active: true,
-                    end_date: {
-                        gt: new Date()
-                    }
-                }
-            })
-        } else {
-            dbTicketBatches = await prisma.ticketBatch.findMany({
-                where: {
-                    event_id: parseInt(eventId),
-                    OR: [{ active: false }, { end_date: { lt: new Date() } }]
-                }
-            })
-        }
-
-
+        const dbTicketBatches: TicketBatch[] = await prisma.ticketBatch.findMany();
 
         if (dbTicketBatches.length < 1) {
             return ErrorResponse("no ticket batches found", 404);

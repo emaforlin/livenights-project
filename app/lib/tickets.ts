@@ -39,18 +39,20 @@ export async function BuyTicketProcess(payload: Omit<PayloadOrder, "description"
         data: { quantity: ticketBatch.quantity - payload.quantity }
     });
 
-    const ordersData = Array.from( {length: payload.quantity },
-        () => ({
-            description: `Ticket para ${event.title}`,
-            user_id: payload.userId
-        })
-    )
-    
-    const orders = await Promise.all(
-        ordersData.map((item) =>
-            prisma.ticketOrder.create({ data: item })
-        )
-    )
 
-    return orders;
+      const createdOrders = await Promise.all(
+        Array.from({ length: payload.quantity }, async () => {
+          return prisma.ticketOrder.create({
+            data: {
+              description: `Ticket para ${event.title}`,
+              user_id: payload.userId,
+              createdAt: new Date(),
+            },
+          });
+        })
+      );
+
+
+
+    return createdOrders;
 }

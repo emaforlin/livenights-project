@@ -89,17 +89,15 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
     const eventId = req.nextUrl.searchParams.get("event");
-    const isActiveParam = req.nextUrl.searchParams.get("active");
-
-    const isActive = isActiveParam?.trim().toLowerCase() === "true";
-
 
     try {
         if (!eventId) {
             throw new Error("event id required");
         }
 
-        const dbTicketBatches: TicketBatch[] = await prisma.ticketBatch.findMany();
+        const dbTicketBatches: TicketBatch[] = await prisma.ticketBatch.findMany({ where: {
+            event_id: parseInt(eventId)
+        }});
 
         if (dbTicketBatches.length < 1) {
             return ErrorResponse("no ticket batches found", 404);

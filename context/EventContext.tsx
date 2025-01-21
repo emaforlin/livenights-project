@@ -6,6 +6,7 @@ import { useState, createContext, ReactNode, useEffect, useContext } from "react
 type EventContextType = {
     events: (Event & {producer: User})[];
     fetchEvents: () => Promise<void>;
+    fetchEventWithId: (id: number) => Promise<void>;
     fetchProducerEvents: () => Promise<void>;
     setProducer: (id: number) => void;
 }
@@ -15,6 +16,22 @@ const EventContext = createContext<EventContextType | undefined>(undefined);
 export const EventProvider = ({ children }: { children: ReactNode }) => {
     const [events, setEvents] = useState<(Event & {producer: User})[]>([]);
     const [producer, setProducer] = useState<number|undefined>(undefined);
+
+    const fetchEventWithId = async (id: number) => {
+        try {
+            const res = await fetch(`/api/events/${id}`);
+            if (!res.ok) {
+                throw new Error("error fetching event with id "+id);
+            }
+
+            const data = await res.json();
+            setEvents(data);
+        } catch (error: any) {
+            console.log(error.message);
+            setEvents([]);
+        }
+    }
+
 
     const fetchEvents = async () => {
         try {
@@ -56,7 +73,7 @@ export const EventProvider = ({ children }: { children: ReactNode }) => {
     }, [producer]);
 
     return (
-        <EventContext.Provider value={{events, fetchEvents, fetchProducerEvents ,setProducer}}>
+        <EventContext.Provider value={{events, fetchEvents, fetchEventWithId ,fetchProducerEvents ,setProducer}}>
             {children}
         </EventContext.Provider>
     )

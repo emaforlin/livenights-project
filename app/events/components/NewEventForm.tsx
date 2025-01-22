@@ -22,6 +22,7 @@ import { useSession } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
 import { VisibilityWrapper } from "@/components/VisibilityWrapper"
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const fileSchema = z.custom<File>((file) => {
     if (!(file instanceof File)) return false;
@@ -71,6 +72,7 @@ export function NewEventForm() {
     const { data: session } = useSession();
     const { toast } = useToast();
     const [stage, setStage] = useState<number>(0);
+    const router = useRouter();
 
     const mainForm = useForm<z.infer<typeof creationFormSchema>>({
         resolver: zodResolver(creationFormSchema),
@@ -101,8 +103,6 @@ export function NewEventForm() {
                     image: filename,
                 };
 
-                
-
                 const res1 = await fetch("/api/events", {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
@@ -113,7 +113,6 @@ export function NewEventForm() {
                     throw new Error("Falló la creación del evento");
                 }
 
-                    
                 const formData = new FormData();
                 formData.append("file", file);
                 formData.append("filename", filename);
@@ -130,6 +129,7 @@ export function NewEventForm() {
                     description: "Puedes continuar la configuración desde la pestaña Mis Eventos",
                     variant: "default"
                 });
+                router.push("/dashboard")
             } else {
                 throw new Error("no session found");
             }

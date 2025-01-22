@@ -4,56 +4,44 @@ import { Event, TicketBatch } from "@prisma/client"
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 type TicketsContextType = {
-    event: Event | undefined;
-    setEvent: (event_id: number) => void
-    batches: TicketBatch[];
+    loadingBatches: boolean;
+    setEventId: (id: number) => void;
+    ticketBatches: TicketBatch[];
     fetchTicketBatches: () => Promise<void>;
+
 }
 
 const TicketsContext = createContext<TicketsContextType | undefined>(undefined);
 
 export const TicketsProvider = ({ children }: { children: ReactNode }) => {
-    const [event, setEvent] = useState<number|undefined>(undefined);
-    const [eventData, setEventData] = useState<Event|undefined>(undefined);
-
-    const [batches, setBatches] = useState<TicketBatch[]>([]);
-
-    const fetchEvent = async () => {
-        try {
-            const res = await fetch(`/api/events/${event}`);
-            if (!res.ok) throw new Error("failed to fetch ticket batches");
-
-            const data: Event = await res.json();
-            setEventData(data);
-        } catch (error: any) {
-            console.log(error.message);
-        }   
-    }
+    const [loadingBatches, setLoadingBatches] = useState<boolean>(false);
+    const [eventId, setEventId] = useState<number|undefined>(undefined);
+    const [ticketBatches, setTicketBatches] = useState<TicketBatch[]>([]);
 
     const fetchTicketBatches = async () => {
+        setLoadingBatches(true);
         try {
-            if (!event) throw new Error("failed to set event");
-
-            const res = await fetch(`/api/tickets/batches?event=${event}`);
+            const res = await fetch(`/api/tickets/batches?event=${eventId}`);
             if (!res.ok) throw new Error("failed to fetch ticket batches");
 
             const data: TicketBatch[] = await res.json();
-            setBatches(data);
+            setTicketBatches(data);
         } catch (error: any) {
-            setBatches([]);
+            setTicketBatches([]);
             console.log(error.message);
+        } finally {
+            setLoadingBatches(false);
         }
     }
 
     useEffect(() => {
-        if (event) {
-            fetchEvent();
-            fetchTicketBatches();
+        if (eventId) {
+            fetchTicketBatches()
         }
-    }, [event])
+    }, [eventId])
 
     return (
-        <TicketsContext.Provider value={{event: eventData, setEvent, batches, fetchTicketBatches}}>
+        <TicketsContext.Provider value={{loadingBatches, setEventId,ticketBatches, fetchTicketBatches}}>
             {children}
         </TicketsContext.Provider>
     )

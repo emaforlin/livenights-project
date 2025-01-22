@@ -25,13 +25,13 @@ interface NewOrderType {
 
 export function BuyTicketForm({className, eventId}: Props) {
     const { data: session } = useSession();
-    const { batches, fetchTicketBatches } = useTicketContext();
+    const { ticketBatches, fetchTicketBatches } = useTicketContext();
 
     const [batch, setBatch] = useState<TicketBatch|undefined>(undefined);
     const [qty, setQty] = useState<number>(1);
 
 
-    const onSubmit = async (e) => {
+    const onSubmit = async (e: any) => {
         e.preventDefault();
 
         if (session?.user && batch && qty) {
@@ -56,7 +56,7 @@ export function BuyTicketForm({className, eventId}: Props) {
     <form onSubmit={onSubmit}>
         <Select
             onValueChange={(value) => {
-                const selectedBatch = batches.find((item) => String(item.id) === value);
+                const selectedBatch = ticketBatches.find((item) => String(item.id) === value);
                 if (selectedBatch) {
                     setBatch(selectedBatch);
                 }
@@ -66,7 +66,7 @@ export function BuyTicketForm({className, eventId}: Props) {
                 <SelectValue placeholder={batch?.name || "Elije una opción"} />
             </SelectTrigger>
             <SelectContent>
-                {batches.map((item: TicketBatch) => {
+                {ticketBatches.map((item: TicketBatch) => {
                     const isDisabled = item.quantity < 1 || !item.active || new Date(item.end_date) < now || new Date(item.start_date) > now;
                     return (
                         <SelectItem key={item.id}

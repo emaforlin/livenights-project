@@ -2,7 +2,7 @@
 
 import React, { use, useEffect, useState } from 'react'
 import { date2text } from '@/utils/date';
-import { MapPin, Calendar, DollarSign } from 'lucide-react';
+import { MapPin, Calendar } from 'lucide-react';
 import Link from 'next/link'
 import { useEventContext } from '@/context/EventContext';
 import Image from "next/image";
@@ -15,7 +15,7 @@ import { Event, User } from '@prisma/client';
 function SingleEvent({ params }: { params: Promise<{eventId: string }>}) {
   const {eventId} =  use(params);
 
-  const { batches, fetchTicketBatches, setEvent } = useTicketContext();
+  const { ticketBatches, fetchTicketBatches, setEventId } = useTicketContext();
   const { events, loading, fetchEventById } = useEventContext();
 
   const [thisEvent, setThisEvent] = useState<Event&{producer: User}|null>(null)
@@ -23,7 +23,7 @@ function SingleEvent({ params }: { params: Promise<{eventId: string }>}) {
   const id = parseInt(eventId);
     
   useEffect(() => {
-    setEvent(id);
+    setEventId(id);
     fetchTicketBatches();
     fetchOneEvent(id);
   }, [])
@@ -89,10 +89,12 @@ function SingleEvent({ params }: { params: Promise<{eventId: string }>}) {
             </div>
 
             <div className="p-2 md:p-4 flex flex-col">
+              {thisEvent && (
               <BuyTicketForm 
                 className="w-full md:w-1/2 p-2 md:p-4 flex flex-col"
                 eventId={thisEvent?.id}
-                />
+              />
+              )}
           </div>
 
           </div>  

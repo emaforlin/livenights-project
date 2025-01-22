@@ -9,19 +9,6 @@ import { useEffect } from "react";
 import { TicketBatchTable } from "./components/TicketbatchTable";
 
 function TicketsDashboard() {
-    const {data: session } = useSession();
-    const { setProducer } = useEventContext();
-    const { batches, setEvent, fetchTicketBatches } = useTicketContext();
-
-
-    useEffect(() => {
-        if (session?.user) {
-            const producerId = parseInt(session.user.id!);
-            setProducer(producerId);
-        }
-    }, [session, ])
-
-
     return (
         <div className="w-full">
             <div className="mx-4 flex-grow">

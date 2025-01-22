@@ -13,19 +13,23 @@ import { Event } from "@prisma/client";
 import RedirectBtn from "@/components/RedirectBtn";
 import { useEventContext } from "@/context/EventContext";
 import { useTicketContext } from "@/context/TicketsContext";
+import { useSession } from "next-auth/react";
 
 
 export const EventDropdown = () => {
-  const {event, setEvent } = useTicketContext()
-  const { events, fetchProducerEvents } = useEventContext();
+  const { data: session } = useSession();
+  const { events, fetchEventsByProducer } = useEventContext();
+  const { setEventId, event } = useTicketContext();
+
+  const producerId = parseInt(session?.user?.id!)
 
   useEffect(() => {
-    fetchProducerEvents();
-  }, [event])
+    fetchEventsByProducer(producerId);
+  }, []);
 
   const handleOpenChange = async (isOpen: boolean) => {
     if (isOpen) {
-      await fetchProducerEvents();
+      fetchEventsByProducer(producerId);
     }
   };
 
@@ -39,7 +43,7 @@ export const EventDropdown = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-72">
           {events.length>0 && events.map((event) => (
-            <DropdownMenuItem key={event.id} onClick={() => setEvent(event.id)}>
+            <DropdownMenuItem key={event.id} onClick={() => setEventId(event.id)}>
               {event.title}
             </DropdownMenuItem>
           ))}

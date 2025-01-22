@@ -5,14 +5,14 @@ import { useTicketContext } from "@/context/TicketsContext";
 
 
 export function TicketBatchTable() {
-  const { event, batches, fetchTicketBatches } = useTicketContext();
+  const { ticketBatches, fetchTicketBatches } = useTicketContext();
   
   useEffect(() => {
     fetchTicketBatches();
     console.log("Data table: se selecciono otro evento")
-  }, [event, batches])
+  }, [])
   
   return (
-    <DataTable columns={columns} data={batches} /> 
+    <DataTable columns={columns} data={ticketBatches} /> 
   )
 }

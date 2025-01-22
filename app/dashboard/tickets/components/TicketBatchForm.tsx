@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { DatePickerWithRange } from "@/components/daterange-picker";
 import { toast, useToast } from "@/hooks/use-toast";
 import { TicketBatch } from "@prisma/client";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 
 const dateRangeSchema = z.object({
@@ -57,6 +57,7 @@ const ticketBatchSchema = z.object({
 })
 
 export function TicketBatchForm() {
+    const router = useRouter();
     const searchParams = useSearchParams();
 
     const eventId = searchParams.get("event");
@@ -109,12 +110,14 @@ export function TicketBatchForm() {
     
         } catch (error: any) {
             console.log(error.message);
+
             toast({
                 title: "Algo salió mal.",
                 description: error.message,
                 variant: "destructive"
             });
 
+            router.push("");
         }            
     };
 

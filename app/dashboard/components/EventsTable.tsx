@@ -5,16 +5,21 @@ import { columns } from "../types/columns";
 import { useEventContext } from "@/context/EventContext";
 import { summarizeEvents } from "@/app/lib/utils";
 import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { Event } from "@prisma/client";
 
 export const EventsTable = () => {
-  const { events, setProducer } = useEventContext(); 
+  const { loading,  events,fetchEventsByProducer } = useEventContext(); 
   const { data: session, status } = useSession();
 
-  if (status === "loading") return <div className="text-sm text-center">Cargando</div>
+  const id = session?.user!.id!;
   
+  useEffect(() => {
+    fetchEventsByProducer(parseInt(id));
+  }, [id]);
 
-  setProducer(parseInt(session?.user?.id!));
-
+  if (loading) return <div className="text-sm text-center">Cargando</div>
+  
   return (
     <DataTable columns={columns} data={summarizeEvents(events)}/>
   )

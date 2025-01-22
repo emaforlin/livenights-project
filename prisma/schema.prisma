@@ -13,6 +13,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+model TicketOrder {
+  id Int @id @default(autoincrement())
+  uid String @default(uuid())
+  description String
+  createdAt DateTime @default(now())
+  usedAt DateTime?
+  user_id Int
+
+  user User @relation(fields: [user_id], references: [id])
+
+}
 model TicketBatch {
   id Int @id @default(autoincrement())
   name String
@@ -51,6 +63,8 @@ model User {
   events Event[]
 
   Image Image[]
+
+  TicketOrder TicketOrder[]
 }
 
 model Role {

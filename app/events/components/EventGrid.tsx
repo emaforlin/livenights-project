@@ -40,9 +40,6 @@ const EventGrid = () => {
                         <MapPin size={16}/>
                         <p className="text-sm text-gray-700 line-clamp-1">{event.location}</p>
                       </div>
-                      <div className="text-left ml-0.5">
-                        <p className="text-xl text-gray-700 line-clamp-1">$ 8.000</p>
-                      </div>
                     </div>
                   </div>
                 </Link>

@@ -9,41 +9,55 @@ import Image from "next/image";
 import { VisibilityWrapper } from '@/components/VisibilityWrapper';
 import { useTicketContext } from '@/context/TicketsContext';
 import { BuyTicketForm } from './components/BuyTicketForm';
+import { Event, User } from '@prisma/client';
 
 
 function SingleEvent({ params }: { params: Promise<{eventId: string }>}) {
   const {eventId} =  use(params);
 
   const { batches, fetchTicketBatches, setEvent } = useTicketContext();
-  const { events, fetchEventWithId } = useEventContext();
+  const { events, loading, fetchEventById } = useEventContext();
+
+  const [thisEvent, setThisEvent] = useState<Event&{producer: User}|null>(null)
 
   const id = parseInt(eventId);
-  
+    
   useEffect(() => {
     setEvent(id);
-    fetchEventWithId(id);
     fetchTicketBatches();
+    fetchOneEvent(id);
   }, [])
   
-  const event = events[0];
   
+  const fetchOneEvent = async (id:number) => {
+    const event = await fetchEventById(id)
+    setThisEvent(event);
+  }
 
 
-  if (!event) {
+  if (loading) {
+    return (
+      <div className="flex items-center">
+        <p className="text-center">Cargando...</p>)
+      </div>
+    )
+  }
+
+  if (!loading && !thisEvent) {
     return (
       <div className="flex my-20">
-        <h1 className="mx-auto text-5xl font-bold">Not Found</h1>
+        <h1 className="mx-auto text-5xl font-bold">No se encontró un resultado.</h1>
       </div>
     )
   }
 
   return (<>
-    <VisibilityWrapper visible={true}>
+    <VisibilityWrapper visible={!loading && !!thisEvent}>
         <div className="flex flex-col md:flex-row m-3 md:m-5 gap-6">
           <div className="w-full md:w-1/2 p-2 md:p-4">
             <Image
               alt=''
-              src={"/api/images/" + event.image}
+              src={"/api/images/" + thisEvent?.image}
               width={800}
               height={800} />
           </div>
@@ -53,31 +67,31 @@ function SingleEvent({ params }: { params: Promise<{eventId: string }>}) {
               Volver
             </Link>
             <h2 className="text-3xl md:text-5xl font-bold break-words">
-              {event?.title?.toUpperCase()}
+              {thisEvent && thisEvent.title?.toUpperCase()}
             </h2>
 
             <div className="flex items-center space-x-2 text-gray-800 mt-4">
               <Calendar className="flex-shrink-0" size={20} />
               <p className="text-base md:text-lg text-gray-400">
-                {date2text(new Date(event?.date))}
+                {thisEvent && date2text(new Date(thisEvent.date))}
               </p>
             </div>
 
             <div className="flex items-center space-x-2 mt-4 md:mt-6 text-gray-700">
               <MapPin className="flex-shrink-0" size={20} />
-              <p className="text-sm break-words">{event?.location}</p>
+              <p className="text-sm break-words">{thisEvent?.location}</p>
             </div>
 
             <div className="mt-4">
               <p className="py-4 md:py-10 text-gray-800 text-sm md:text-base">
-                {event?.description || "Este evento no tiene una descripción."}
+                {thisEvent && thisEvent.description || "Este evento no tiene una descripción."}
               </p>
             </div>
 
             <div className="p-2 md:p-4 flex flex-col">
               <BuyTicketForm 
                 className="w-full md:w-1/2 p-2 md:p-4 flex flex-col"
-                eventId={event.id}
+                eventId={thisEvent?.id}
                 />
           </div>
 

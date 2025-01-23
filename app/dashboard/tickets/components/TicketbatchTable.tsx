@@ -2,6 +2,7 @@ import { DataTable } from "@/components/ui/data-table";
 import columns from "./columns";
 import { useEffect } from "react";
 import { useTicketContext } from "@/context/TicketsContext";
+import { toast } from "@/hooks/use-toast";
 
 
 export function TicketBatchTable() {
@@ -9,7 +10,6 @@ export function TicketBatchTable() {
   
   useEffect(() => {
     fetchTicketBatches();
-    console.log("Data table: se selecciono otro evento")
   }, [])
   
   return (

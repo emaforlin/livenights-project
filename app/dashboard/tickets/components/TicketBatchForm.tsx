@@ -185,7 +185,7 @@ export function TicketBatchForm() {
                         name="date_range"
                         render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Fecha</FormLabel>
+                            <FormLabel>Activo durante</FormLabel>
                             <FormControl>
                                 <DatePickerWithRange {...field} 
                                     value={field.value} 

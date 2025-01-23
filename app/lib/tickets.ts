@@ -46,6 +46,7 @@ export async function BuyTicketProcess(payload: Omit<PayloadOrder, "description"
             data: {
               description: `Ticket para ${event.title}`,
               user_id: payload.userId,
+              event_id: payload.eventId,
               createdAt: new Date(),
             },
           });

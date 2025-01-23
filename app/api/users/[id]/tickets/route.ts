@@ -12,10 +12,14 @@ export async function GET(request: NextRequest,
         const userTickets = await prisma.ticketOrder.findMany({
             where: {
                 user_id: parseInt(userId)
+            },
+            include: {
+                event: true,
+                batch: true,
             }
-        })
+        });
 
-        if (userTickets.length < 1) return ErrorResponse("no tickets found", 404);
+        if (!userTickets) return ErrorResponse("no tickets found", 404);
         return GenericResponse(userTickets, 200);
     } catch (error: any) {
         return ErrorResponse(error.message, 404);

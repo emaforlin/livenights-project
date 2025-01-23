@@ -31,7 +31,7 @@ const ticketBatchSchema = z.object({
         .preprocess((value) => (typeof value === "string" ? new Date(value) : value), z.date())
         .refine((date) => !date || date > new Date(), { message: "date must to be on the future" }),
         
-    active: z.boolean().optional().default(false),
+    active: z.boolean().optional().default(true),
 
     event_id: z
         .number( { message: "event_id field required" })

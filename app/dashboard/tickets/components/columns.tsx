@@ -1,8 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useTicketContext } from "@/context/TicketsContext";
+import { useToast } from "@/hooks/use-toast";
 import { TicketBatch } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react";
+
+
 
 export const columns: ColumnDef<TicketBatch>[] = [
     {
@@ -12,6 +16,7 @@ export const columns: ColumnDef<TicketBatch>[] = [
         accessorKey: "price",
         header: "Precio",
         cell: ({ row }) => {
+            const { toast } = useToast();
             const amount = parseFloat(row.getValue("price"))
             const formatted = new Intl.NumberFormat("es-AR", {
               style: "currency",
@@ -31,6 +36,28 @@ export const columns: ColumnDef<TicketBatch>[] = [
         enableHiding: false,
         cell: (({row}) => {
             const batch = row.original;
+
+            const { toast } = useToast();
+            const { fetchTicketBatches } = useTicketContext();
+
+            const handleDelete = async (id: number) => {
+                try {
+                    const res = await fetch(`/api/tickets/batches/${id}`, {
+                        method: "DELETE"
+                    });
+                    if (!res.ok) throw new Error("No se pudo eliminar la tanda.");
+
+                    toast({title: "Tanda eliminada exitosamente."})
+                    fetchTicketBatches();
+                } catch (error: any) {
+                    toast({
+                        title: error.message,
+                        description: "Intente nuevamente mas tarde.",
+                        variant: "destructive",
+                })
+            }
+
+}
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -43,9 +70,7 @@ export const columns: ColumnDef<TicketBatch>[] = [
                         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                         <DropdownMenuItem>
                             <Button variant="destructive"
-                                onClick={() => fetch(`/api/tickets/batches/${batch.id}`, {
-                                    method: "DELETE"
-                                })}>Eliminar</Button>
+                                onClick={() => handleDelete(batch.id)}>Eliminar</Button>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

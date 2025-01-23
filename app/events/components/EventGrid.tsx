@@ -23,11 +23,11 @@ const EventGrid = () => {
                       src={"/api/images/"+event.image}
                       width={288}
                       height={288}
-                      alt={"Cover of an event called " + event.title + " produced by "+event.producer}
+                      alt={"Cover of an event called " + event.title + " produced by "+event.producer.username}
                     />
                   </div>
                   <div className="p-4">
-                    <p className="text-sm text-slate-500">{event.producer?.name}</p>
+                    <p className="text-sm text-slate-500">{event.producer?.username}</p>
                     <h3 className="text-xl font-semibold text-gray-800 group-hover:text-orange-400 transition-colors duration-300">
                       {event.title}
                     </h3>

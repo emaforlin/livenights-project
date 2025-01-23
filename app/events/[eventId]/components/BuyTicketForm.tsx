@@ -1,32 +1,24 @@
 import { PayloadOrder } from "@/app/lib/tickets";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { VisibilityWrapper } from "@/components/VisibilityWrapper";
-import { useEventContext } from "@/context/EventContext";
 import { useTicketContext } from "@/context/TicketsContext";
-import { TicketBatch, TicketOrder } from "@prisma/client";
+import { useToast } from "@/hooks/use-toast";
+import { TicketBatch } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState } from "react";
+
 
 interface Props {
     className?: string
     eventId: number
 }
 
-interface NewOrderType {
-    userId: number;
-    batchId: number;
-    eventId: number;
-    quantity: number;
-}
-
 export function BuyTicketForm({className, eventId}: Props) {
     const { data: session } = useSession();
     const { ticketBatches, fetchTicketBatches } = useTicketContext();
-
+    const { toast } = useToast();
     const [batch, setBatch] = useState<TicketBatch|undefined>(undefined);
     const [qty, setQty] = useState<number>(1);
 
@@ -41,13 +33,27 @@ export function BuyTicketForm({className, eventId}: Props) {
                 quantity: qty,
                 userId: parseInt(session.user.id!),
             }
+            try {
+                const res = await fetch("/api/tickets/buy", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(payload)
+                });
 
-            await fetch("/api/tickets/buy", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(payload)
-                }
-            );
+                if (!res.ok) throw new Error("No se pudo completar la compra.");
+                
+                toast({
+                    title: "Compra exitosa!.",
+                    description: "Puedes ver tus tickets en la sección Mis Tickets."
+                    });
+            } catch (error: any) {
+                toast({
+                    title: "Algo salió mal...",
+                    description: error.message,
+                    variant: "destructive"
+                });
+            }  
+
         }
     };
 
@@ -55,6 +61,7 @@ export function BuyTicketForm({className, eventId}: Props) {
     return (
     <form onSubmit={onSubmit}>
         <Select
+            onOpenChange={fetchTicketBatches}
             onValueChange={(value) => {
                 const selectedBatch = ticketBatches.find((item) => String(item.id) === value);
                 if (selectedBatch) {

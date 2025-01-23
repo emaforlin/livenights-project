@@ -5,12 +5,11 @@ import { columns } from "../types/columns";
 import { useEventContext } from "@/context/EventContext";
 import { summarizeEvents } from "@/app/lib/utils";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
-import { Event } from "@prisma/client";
+import { useEffect } from "react";
 
 export const EventsTable = () => {
   const { loading,  events,fetchEventsByProducer } = useEventContext(); 
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   const id = session?.user!.id!;
   

@@ -21,10 +21,12 @@ model TicketOrder {
   createdAt DateTime @default(now())
   usedAt DateTime?
   user_id Int
+  event_id Int
 
   user User @relation(fields: [user_id], references: [id])
-
+  event Event @relation(fields: [event_id], references: [id])
 }
+
 model TicketBatch {
   id Int @id @default(autoincrement())
   name String
@@ -51,6 +53,8 @@ model Event {
   producer User @relation(fields: [producer_id], references: [id])
 
   TicketBatch TicketBatch[]
+
+  TicketOrder TicketOrder[]
 }
 
 model User {

@@ -15,8 +15,8 @@ import { Event, User } from '@prisma/client';
 function SingleEvent({ params }: { params: Promise<{eventId: string }>}) {
   const {eventId} =  use(params);
 
-  const { ticketBatches, fetchTicketBatches, setEventId } = useTicketContext();
-  const { events, loading, fetchEventById } = useEventContext();
+  const { fetchTicketBatches, setEventId } = useTicketContext();
+  const { loading, fetchEventById } = useEventContext();
 
   const [thisEvent, setThisEvent] = useState<Event&{producer: User}|null>(null)
 
@@ -37,9 +37,7 @@ function SingleEvent({ params }: { params: Promise<{eventId: string }>}) {
 
   if (loading) {
     return (
-      <div className="flex items-center">
-        <p className="text-center">Cargando...</p>)
-      </div>
+        <p className="flex justify-center text-2xl">Cargando...</p>
     )
   }
 

@@ -47,6 +47,7 @@ export async function BuyTicketProcess(payload: Omit<PayloadOrder, "description"
               description: `Ticket para ${event.title}`,
               user_id: payload.userId,
               event_id: payload.eventId,
+              batch_id: payload.batchId,
               createdAt: new Date(),
             },
           });

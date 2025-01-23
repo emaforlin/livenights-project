@@ -7,6 +7,7 @@ import { useTicketContext } from "@/context/TicketsContext";
 import { useToast } from "@/hooks/use-toast";
 import { TicketBatch } from "@prisma/client";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 
@@ -16,7 +17,9 @@ interface Props {
 }
 
 export function BuyTicketForm({className, eventId}: Props) {
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
+    const router = useRouter();
+
     const { ticketBatches, fetchTicketBatches } = useTicketContext();
     const { toast } = useToast();
     const [batch, setBatch] = useState<TicketBatch|undefined>(undefined);
@@ -26,13 +29,16 @@ export function BuyTicketForm({className, eventId}: Props) {
     const onSubmit = async (e: any) => {
         e.preventDefault();
 
-        if (session?.user && batch && qty) {
+        if (status == "unauthenticated") router.replace("/login")
+
+        if (batch && qty) {
             const payload: Omit<PayloadOrder, "description"> = {
                 batchId: batch.id,
                 eventId: eventId,
                 quantity: qty,
-                userId: parseInt(session.user.id!),
+                userId: parseInt(session!.user!.id!),
             }
+            console.log(payload);
             try {
                 const res = await fetch("/api/tickets/buy", {
                     method: "POST",
@@ -62,7 +68,7 @@ export function BuyTicketForm({className, eventId}: Props) {
     <form onSubmit={onSubmit}>
         <Select
             onOpenChange={fetchTicketBatches}
-            onValueChange={(value) => {
+            onValueChange={(value: string) => {
                 const selectedBatch = ticketBatches.find((item) => String(item.id) === value);
                 if (selectedBatch) {
                     setBatch(selectedBatch);

@@ -6,6 +6,7 @@ import { SessionProvider } from "next-auth/react";
 import { RoleProvider } from "@/context/RoleContext";
 import { getUserRole } from "./lib/dal";
 import { Toaster } from "@/components/ui/toaster";
+import { UserTicketsProvider } from "@/context/UserTicketsContext";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,6 +21,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
       <body className="h-full w-full">
         <RoleProvider role={role}>
           <SessionProvider>
+            <UserTicketsProvider>
               <SidebarProvider>
                 <div className="flex h-screen">
                   <AppSidebar />
@@ -28,8 +30,9 @@ export default async function Layout({ children }: { children: React.ReactNode }
                 {children}
                 <Toaster />
               </SidebarProvider>
-            </SessionProvider>
-          </RoleProvider>
+            </UserTicketsProvider>
+          </SessionProvider>
+        </RoleProvider>
       </body>
     </html>
   )

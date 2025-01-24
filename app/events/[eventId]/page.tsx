@@ -9,7 +9,7 @@ import Image from "next/image";
 import { VisibilityWrapper } from '@/components/VisibilityWrapper';
 import { useTicketContext } from '@/context/TicketsContext';
 import { BuyTicketForm } from './components/BuyTicketForm';
-import { Event, User } from '@prisma/client';
+import { Event, TicketBatch, User } from '@prisma/client';
 
 
 function SingleEvent({ params }: { params: Promise<{eventId: string }>}) {
@@ -18,7 +18,10 @@ function SingleEvent({ params }: { params: Promise<{eventId: string }>}) {
   const { fetchTicketBatches, setEventId } = useTicketContext();
   const { loading, fetchEventById } = useEventContext();
 
-  const [thisEvent, setThisEvent] = useState<Event&{producer: User}|null>(null)
+  const [thisEvent, setThisEvent] = useState<(Event & {
+          producer: User;
+          TicketBatch: TicketBatch[];
+      })|null>(null)
 
   const id = parseInt(eventId);
     
@@ -27,17 +30,15 @@ function SingleEvent({ params }: { params: Promise<{eventId: string }>}) {
     fetchTicketBatches();
     fetchOneEvent(id);
   }, [])
-  
-  
+    
   const fetchOneEvent = async (id:number) => {
     const event = await fetchEventById(id)
     setThisEvent(event);
   }
 
-
   if (loading) {
     return (
-        <p className="flex justify-center text-2xl">Cargando...</p>
+        <p className="flex w-full items-center justify-center text-2xl">Cargando...</p>
     )
   }
 
@@ -87,12 +88,12 @@ function SingleEvent({ params }: { params: Promise<{eventId: string }>}) {
             </div>
 
             <div className="p-2 md:p-4 flex flex-col">
-              {thisEvent && (
-              <BuyTicketForm 
-                className="w-full md:w-1/2 p-2 md:p-4 flex flex-col"
-                eventId={thisEvent?.id}
-              />
-              )}
+              <VisibilityWrapper visible={!!thisEvent}>
+                <BuyTicketForm 
+                  className="w-full md:w-1/2 p-2 md:p-4 flex flex-col"
+                  eventId={thisEvent?.id!}
+                />
+            </VisibilityWrapper>
           </div>
 
           </div>  

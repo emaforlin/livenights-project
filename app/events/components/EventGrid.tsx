@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useEventContext } from '@/context/EventContext';
 import Link from 'next/link';
 import { Calendar, MapPin } from 'lucide-react';
@@ -8,7 +8,11 @@ import { date2text } from '@/utils/date';
 import Image from 'next/image';
 
 const EventGrid = () => {
-    const { events } = useEventContext();
+    const { events, fetchActiveEvents } = useEventContext();
+    useEffect(() => {
+      fetchActiveEvents();
+    }, []);
+    console.log("events", events);
     return (
         <div className="flex justify-center">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">

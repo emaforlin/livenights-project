@@ -7,8 +7,13 @@ export async function GET(request: NextRequest,
 ) {
     const userId = (await params).id;
 
+    const includeRole = request.nextUrl.searchParams.get("role");
+
     const user = await prisma.user.findUnique({
         where: {id: parseInt(userId) },
+        include: {
+            role: includeRole==="simirey" || false
+        }
     });
 
     if (!user) {
@@ -38,8 +43,13 @@ export async function PATCH(req: NextRequest,
             data: {
                 username: reqBody.username,
                 role: {
-                    connect: {
-                        name: reqBody.role
+                    connectOrCreate: {
+                        where: {
+                            name: reqBody.role
+                        },
+                        create: {
+                            name: reqBody.role
+                        }
                     }
                 }
             }
@@ -47,8 +57,8 @@ export async function PATCH(req: NextRequest,
         })
         return GenericResponse(updatedUser, 200);
                 
-    } catch (error) {
-        console.log(error);
+    } catch (error: any) {
+        console.log(error.message);
         return ErrorResponse("couldn't updated user", 400);
     }
         

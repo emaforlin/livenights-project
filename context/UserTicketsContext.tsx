@@ -22,7 +22,7 @@ export const UserTicketsProvider = ({ children }: { children: ReactNode }) => {
         try {
             if (!userId) throw new Error("could not fetch user without an id");
             const res = await fetch(`/api/users/${userId}`);
-            if (!res.ok) throw new Error("faild to fetch user");
+            if (!res.ok) throw new Error("failed to fetch user");
             setUserData(await res.json());
         } catch (error: any) {
             setUserData(undefined);

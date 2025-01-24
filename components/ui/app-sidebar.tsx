@@ -1,20 +1,15 @@
 "use client"
 
 import * as React from "react"
-import {
-  Ticket,
-} from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
-import { EventSwitcher } from "@/app/dashboard/tickets/components/EventDropdown"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import {FullEvent} from "@/types/event"
 
 
 const data = {
@@ -26,18 +21,6 @@ const data = {
   },
 }
 
-const convertToEventSwType = (fullEvent: FullEvent): {
-  title: string
-  date: string
-  logo: React.ElementType
-} => {
-  return {
-    title: fullEvent.title,
-    date: (new Date(fullEvent.date)).toLocaleDateString(),
-    logo: Ticket
-
-  }
-}
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {  
   return (

@@ -4,13 +4,13 @@ import { cache } from "react";
 import { auth } from "@/auth";
 import { prisma } from "@/app/lib/db";
 
-export const getSession = cache(async () => {
+export const getSession = async () => {
     const session = await auth();
 
     return session;
-})
+}
 
-export const getUserRole = cache(async () => {
+export const getUserRole = async () => {
     const session = await auth();
     
     try {
@@ -28,4 +28,4 @@ export const getUserRole = cache(async () => {
         return "GUEST";
     }
 
-})
+}

@@ -22,9 +22,11 @@ model TicketOrder {
   usedAt DateTime?
   user_id Int
   event_id Int
+  batch_id Int
 
   user User @relation(fields: [user_id], references: [id])
   event Event @relation(fields: [event_id], references: [id])
+  batch TicketBatch @relation(fields: [batch_id], references: [id])
 }
 
 model TicketBatch {
@@ -38,6 +40,8 @@ model TicketBatch {
   event_id Int
 
   event Event @relation(fields: [event_id], references: [id])
+
+  TicketOrder TicketOrder[]
 }
 
 model Event {

@@ -1,9 +1,10 @@
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github"
+import GoogleProvider from "next-auth/providers/google"
 import { prisma } from "./app/lib/db";
 
 export const { handlers, signIn, signOut, auth} = NextAuth({
-    providers: [GitHub],
+    providers: [GitHub, GoogleProvider],
     callbacks: {
         async signIn({ user }) {
             const email = user.email!;

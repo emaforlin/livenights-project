@@ -62,6 +62,7 @@ model User {
   email String @unique
   name String
   username String? @unique
+  password String?
   role_id Int 
   role Role @relation(fields: [role_id], references: [id])
   events Event[]

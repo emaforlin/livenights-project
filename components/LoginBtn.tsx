@@ -1,9 +1,21 @@
 import { signIn } from 'next-auth/react'
 import React from 'react'
+import { Button } from './ui/button';
 
-const LoginBtn = () => {
+type LoginBtnProps ={
+  provider: string;
+  redirectTo: string|undefined;
+  children: React.ReactNode
+}
+
+const LoginBtn = ({provider, redirectTo, children}: LoginBtnProps) => {
   return (
-    <button onClick={() => signIn()} className="flex justify-center w-3/4 mb-3 text-black text-2xl hover:text-blue-500 hover:shadow-lg">Iniciar Sesion</button>
+    <Button variant="outline" className="w-full"
+      onClick={async () => {
+        await signIn(provider, {redirectTo: redirectTo})
+        }
+      }>{children}
+    </Button>
   )
 }
 

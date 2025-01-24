@@ -7,8 +7,13 @@ export async function GET(request: NextRequest,
 ) {
     const userId = (await params).id;
 
+    const includeRole = request.nextUrl.searchParams.get("role");
+
     const user = await prisma.user.findUnique({
         where: {id: parseInt(userId) },
+        include: {
+            role: includeRole==="simirey" || false
+        }
     });
 
     if (!user) {

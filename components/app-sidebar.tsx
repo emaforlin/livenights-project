@@ -41,7 +41,6 @@ export async function AppSidebar({ ...props }: React.ComponentProps<typeof Sideb
   }
 
   return (
-    <RoleProvider role={role}>
       <Sidebar collapsible="icon" {...props}>
         <SidebarContent>
           <NavMain />
@@ -51,6 +50,5 @@ export async function AppSidebar({ ...props }: React.ComponentProps<typeof Sideb
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>
-    </RoleProvider>
   )
 }

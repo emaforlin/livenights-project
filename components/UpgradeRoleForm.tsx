@@ -9,19 +9,21 @@ import { Input } from "./ui/input";
 import { Checkbox } from "./ui/checkbox";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useRole } from "@/context/RoleContext";
 
 const formSchema = z.object({
-    username: z.string().min(2, {
+    username: z.string().min(4, {
         message: "Usuario debe tener al menos 2 caracteres.",
     }),
-    safetyCheck: z.boolean({
-        message: "Debes aceptar para continuar.",
-        required_error: "Debes aceptar para continuar."
-    }).default(false)
+    safetyCheck: z.literal(true, {
+        errorMap: () => ({message: "Debes aceptar para continuar."}),
+    })
 })
 
 export function UpgradeRoleForm() {
     const {data: session} = useSession();
+    const {role, setRole} = useRole();
+    
     const router = useRouter();
 
     
@@ -31,22 +33,24 @@ export function UpgradeRoleForm() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             username: "",
-            safetyCheck: false,
         },
 
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        fetch(`/api/users/${userId}`,{
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        const res = await fetch(`/api/users/${userId}`,{
             method: "PATCH",
             headers: {"Content-Type":"application/json"},
             body: JSON.stringify({
                 role: "PRODUCER",
                 username: values.username
             })
-        });
 
-        router.push("#")
+        });
+        if (res.ok) {
+            setRole("PRODUCER");
+            router.push("/settings")
+        }
 
     }
     
@@ -71,14 +75,14 @@ export function UpgradeRoleForm() {
                     control={form.control}
                     name="safetyCheck"
                     render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                    <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
                         <FormControl>
                             <Checkbox
                             checked={field.value}
                             onCheckedChange={field.onChange}  
                             />
                         </FormControl>
-                        <div className="space-y-1 leading-none">
+                        <div className="leading-none">
                             <FormLabel>Entiendo y acepto que esta accion sera irreversible.</FormLabel>
                             <FormMessage />
                         </div>

@@ -4,7 +4,6 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SessionProvider } from "next-auth/react";
 import { RoleProvider } from "@/context/RoleContext";
-import { getUserRole } from "./lib/dal";
 import { Toaster } from "@/components/ui/toaster";
 import { UserTicketsProvider } from "@/context/UserTicketsContext";
 
@@ -15,12 +14,11 @@ export const metadata: Metadata = {
 
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
-  const role = await getUserRole();
   return (
     <html>
       <body className="h-full w-full">
-        <RoleProvider role={role}>
-          <SessionProvider>
+        <SessionProvider>
+          <RoleProvider>
             <UserTicketsProvider>
               <SidebarProvider>
                 <div className="flex h-screen">
@@ -31,8 +29,8 @@ export default async function Layout({ children }: { children: React.ReactNode }
                 <Toaster />
               </SidebarProvider>
             </UserTicketsProvider>
-          </SessionProvider>
-        </RoleProvider>
+          </RoleProvider>
+        </SessionProvider>
       </body>
     </html>
   )

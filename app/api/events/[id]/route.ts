@@ -22,6 +22,9 @@ export async function GET(request: Request,
 
     const event = await prisma.event.findUnique({
         where: {id: parseInt(eventId) },
+        include: {
+            TicketBatch: true,
+        }
     });
 
     if (!event) {

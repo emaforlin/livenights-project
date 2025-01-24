@@ -20,6 +20,8 @@ import {
 import Link from "next/link"
 import { useRole } from "@/context/RoleContext"
 import PermissionWrapper from "./PermissionWrapper";
+import { usePathname } from "next/navigation";
+import { VisibilityWrapper } from "./VisibilityWrapper";
 
 const producerItems = [
   {
@@ -72,7 +74,7 @@ const guestItems = [
 ]
 
 export function NavMain() {
-  
+  const pathname = usePathname();
   return (
     <SidebarGroup>
       <PermissionWrapper allowedRoles={["PRODUCER"]}> 
@@ -116,7 +118,7 @@ export function NavMain() {
       </PermissionWrapper>
 
       <PermissionWrapper allowedRoles={["USER"]}>
-      <SidebarGroupLabel>Seccion Usuario</SidebarGroupLabel>
+        <SidebarGroupLabel>Seccion Usuario</SidebarGroupLabel>
         <SidebarMenu>
           {userItems.map((item) => (
             <Collapsible
@@ -156,8 +158,9 @@ export function NavMain() {
       </PermissionWrapper>
 
       <PermissionWrapper allowedRoles={["GUEST"]}>
-      <SidebarGroupLabel>Seccion Usuario</SidebarGroupLabel>
+        <SidebarGroupLabel>Seccion Usuario</SidebarGroupLabel>
         <SidebarMenu>
+          <VisibilityWrapper visible={!pathname.endsWith("login")}>
           {guestItems.map((item) => (
             <Collapsible
               key={item.title}
@@ -192,6 +195,7 @@ export function NavMain() {
               </SidebarMenuItem>
             </Collapsible>
             ))}
+          </VisibilityWrapper>
         </SidebarMenu>
       </PermissionWrapper>
     </SidebarGroup>

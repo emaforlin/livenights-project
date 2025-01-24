@@ -19,15 +19,6 @@ type UserData = {
   avatar: string
 }
 
-const data = {
-  user: {
-    firstname: "Emanuel",
-    lastname: "Forlin",
-    email: "m@example.com",
-    avatar: "/avatars/emanuel.jpg",
-  },
-}
-
 export async function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {  
   const session = await getSession();
   const role = await getUserRole();
@@ -56,7 +47,7 @@ export async function AppSidebar({ ...props }: React.ComponentProps<typeof Sideb
           <NavMain />
         </SidebarContent>
         <SidebarFooter>
-          { session && (<NavUser user={user} />) || (<SigninBtn/>)}
+          { session && (<NavUser user={user} />) || <SigninBtn/> }
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>

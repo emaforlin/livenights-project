@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DatePickerWithRange } from "@/components/daterange-picker";
-import { toast, useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { TicketBatch } from "@prisma/client";
 import { useSearchParams, useRouter } from "next/navigation";
 
@@ -87,9 +87,6 @@ export function TicketBatchForm() {
                 end_date: values.date_range.to,
                 event_id: parseInt(eventId)
             }
-
-            console.log(data);
-
 
             const res = await fetch("/api/tickets/batches", {
                 method: "POST",

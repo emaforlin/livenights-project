@@ -1,10 +1,31 @@
 import NextAuth from "next-auth";
-import GitHub from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
+import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "./app/lib/db";
+import { compare } from "bcryptjs";
 
 export const { handlers, signIn, signOut, auth} = NextAuth({
-    providers: [GitHub, GoogleProvider],
+    providers: [GoogleProvider, CredentialsProvider({
+        async authorize(credentials: {email: string; password: string}) {
+            if (!credentials) return null;
+            const {email, password} = credentials;
+            
+            const dbUser = await prisma.user.findUnique({where: {email}, include: {role: true}});
+
+            if (!dbUser) throw new Error("Email o contraseña incorrectos.");
+
+            const isCorrectPassword = compare(password, dbUser.password!);
+
+            if (!isCorrectPassword) throw new Error("Email o contraseña incorrectos.");
+
+            return {
+                id: dbUser.id,
+                name: dbUser.name,
+                email: dbUser.email,
+                role: dbUser.role
+            }
+        },
+    })],
     callbacks: {
         async signIn({ user }) {
             const email = user.email!;
@@ -15,7 +36,14 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
                 update: {},
                 create: { 
                     email, name, role: {
-                    connect: {name: "USER"},
+                        connectOrCreate: {
+                            create: {
+                                name: "USER",
+                            },
+                            where: {
+                                name: "USER"
+                            }
+                        }
                     },
                 },
             });
@@ -51,4 +79,8 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
     session: {
         strategy: "jwt",
     },
+    pages: {
+        signIn: "/auth/login",
+        error: "/auth/unauthorized"
+    }
 });

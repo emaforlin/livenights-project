@@ -14,9 +14,13 @@ const EventGrid = () => {
     }, []);
     console.log("events", events);
     return (
-        <div className="flex justify-center">
+      <div className="flex justify-center">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {events.map((event) => (
+            {events.map((event) => {
+              const minPriceBatch = event.TicketBatch.reduce((min, current) => {
+                return current.price < min.price ? current : min;
+              }, event.TicketBatch[0]);
+              return (
                 <div 
                   key={event.id} 
                   className="w-full max-w-xs bg-slate-100 rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden">
@@ -32,7 +36,7 @@ const EventGrid = () => {
                   </div>
                   <div className="p-4">
                     <p className="text-sm text-slate-500">{event.producer?.username}</p>
-                    <h3 className="text-xl font-semibold text-gray-800 group-hover:text-orange-400 transition-colors duration-300">
+                    <h3 className="truncate text-xl font-semibold text-gray-800 group-hover:text-orange-400 transition-colors duration-300">
                       {event.title}
                     </h3>
                     <div className="mt-2 space-y-1">
@@ -44,11 +48,16 @@ const EventGrid = () => {
                         <MapPin size={16}/>
                         <p className="text-sm text-gray-700 line-clamp-1">{event.location}</p>
                       </div>
+                      <div>
+                        <p>Desde: ${minPriceBatch.price}</p>
+                      </div>
                     </div>
                   </div>
                 </Link>
-              </div>
-            ))}
+              </div>                         
+           )
+          }
+        )}
         </div>
       </div>
   )

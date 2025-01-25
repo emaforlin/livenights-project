@@ -1,31 +1,23 @@
 "use client";
 
+import { EventDetails } from "@/types/event";
 import { Event, TicketBatch, User } from "@prisma/client";
 import { useState, createContext, ReactNode, useContext } from "react";
 
 type EventContextType = {
-    events: (Event & {
-        producer: User;
-        TicketBatch: TicketBatch[]
-    })[];
+    events: EventDetails[];
     loading: boolean;
     error: Error|null;
     fetchAllEvents: () => Promise<void>;
     fetchEventsByProducer: (producerId: number) => Promise<void>;
-    fetchEventById: (eventId: number) => Promise<(Event & {
-        producer: User;
-        TicketBatch: TicketBatch[];
-    })|null>;
+    fetchEventById: (eventId: number) => Promise<EventDetails|null>;
     fetchActiveEvents: () => Promise<void>;
 }
 
 const EventContext = createContext<EventContextType | undefined>(undefined);
 
 export const EventProvider = ({ children }: { children: ReactNode }) => {
-    const [events, setEvents] = useState<(Event & {
-        producer: User;
-        TicketBatch: TicketBatch[];
-    })[]>([]);
+    const [events, setEvents] = useState<EventDetails[]>([]);
 
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<Error|null>(null);
@@ -94,9 +86,6 @@ export const EventProvider = ({ children }: { children: ReactNode }) => {
         }  
     };
 
-    // useEffect(() => {
-    //     fetchAllEvents();
-    // }, [])
 
     return (
         <EventContext.Provider value={{events, loading, error, fetchAllEvents, fetchEventById, fetchEventsByProducer, fetchActiveEvents}}>

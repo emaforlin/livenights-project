@@ -20,17 +20,7 @@ interface TicketProps {
 
 function Ticket({ data }: TicketProps) {
   const [used, setUsed] = useState<boolean>(false);
-  useEffect(() => {
-    const checkTicketUsed = async (uid: string) => {
-      const res = await fetch(`/api/tickets/${uid}`);
-      if (res.ok) {
-        const { used } = await res.json();
-        setUsed(used);
-      }
-    }
-
-    checkTicketUsed(data.uid);
-  }, [data])
+  
   const formattedDate = format(data.date, "dd/MM/yyyy | HH:mm ", {locale: es})
   console.log("used", used)
 // bg-pink-500 hover:bg-pink-600
@@ -54,7 +44,7 @@ function Ticket({ data }: TicketProps) {
             ))}
           </div>
         </div>
-          <p className={"flex justify-center text-white font-bold tracking-widest" + used?"decoration-black decoration-2 line-through":""} 
+          <p className={"flex justify-center text-white font-bold tracking-widest"} 
             style={{ writingMode: 'vertical-rl', textOrientation: 'initial' }}>
               {data.uid.split("-")[0].toUpperCase()}
           </p>

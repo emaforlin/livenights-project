@@ -6,13 +6,26 @@ import { getSession } from "@/app/lib/dal";
 
 export async function GET(req: NextRequest) {
     const producerId = req.nextUrl.searchParams.get("producer");
-    
     try {
         let events: any;
         if (producerId) {
             events = await prisma.event.findMany({
                 where: { producer_id: parseInt(producerId) },
-                include: { producer: true } 
+                select: {
+                    id: true,
+                    date: true,
+                    description: true,
+                    image: true,
+                    location: true,
+                    TicketBatch: true,
+                    title: true,
+                    producer: true,
+                    _count: {
+                        select: {
+                            TicketOrder: true
+                        }
+                    }
+                }
             });
         } else {
             events = await prisma.event.findMany({ 

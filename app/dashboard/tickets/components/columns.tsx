@@ -52,12 +52,11 @@ export const columns: ColumnDef<TicketBatch>[] = [
                 } catch (error: any) {
                     toast({
                         title: error.message,
-                        description: "Intente nuevamente mas tarde.",
+                        description: "Puede deberse a que ya se han vendido tickets. Y esto no tiene solucion.",
                         variant: "destructive",
-                })
+                    })
+                }
             }
-
-}
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

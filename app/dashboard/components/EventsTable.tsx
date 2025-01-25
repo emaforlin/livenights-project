@@ -6,7 +6,6 @@ import { useEventContext } from "@/context/EventContext";
 import { summarizeEvents } from "@/app/lib/utils";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import { EventSummary } from "@/types/event";
 
 export const EventsTable = () => {
   const { loading,  events, fetchEventsByProducer } = useEventContext(); 

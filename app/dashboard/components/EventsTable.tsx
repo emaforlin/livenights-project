@@ -15,10 +15,10 @@ export const EventsTable = () => {
   
   useEffect(() => {
     fetchEventsByProducer(parseInt(id));
-  }, [id]);
+  }, []);
+
 
   if (loading) return <div className="text-sm text-center">Cargando</div>
-  
   return (
     <DataTable columns={columns} data={summarizeEvents(events)}/>
   )

@@ -9,3 +9,5 @@ export const ErrorPaymentFailure = new Error("payment failed");
 export const ErrorParsingBody = new Error("error parsing body");
 
 export const ErrorUserNotFound = new Error("user not found");
+
+export const ErrorUnauthorized = new Error("error unauthorized")

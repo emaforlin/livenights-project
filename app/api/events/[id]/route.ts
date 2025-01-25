@@ -4,15 +4,17 @@ import { ErrorResponse, GenericResponse } from "@/utils/responses";
 export async function DELETE(request: Request, 
     { params }: { params: Promise<{ id: string }> }
 ) {
-    const eventId = (await params).id;
-
-    const {id} = await prisma.event.delete({where: {id: parseInt(eventId) }});
-
-    if (!id) {
-        return ErrorResponse(`event with id: ${eventId} not found`, 404)
+    try {
+        const eventId = (await params).id;
+        const deleted = await prisma.event.delete({where: {id: parseInt(eventId)}});
+        if (!deleted) throw new Error("failed to delete event");
+        return GenericResponse({
+            deleted: deleted.id
+        }, 200);
+    } catch (error: any) {
+        console.log(error.message);
+        return ErrorResponse(error.message, 400)
     }
-
-    return GenericResponse({"message": `deleted event with id: ${id}`}, 200);
 }
 
 export async function GET(request: Request, 

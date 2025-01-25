@@ -1,5 +1,6 @@
 import { getSession } from "@/app/lib/dal";
 import { prisma } from "@/app/lib/db";
+import { retrieveImages } from "@/app/lib/s3";
 import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { NextRequest } from "next/server";
 import { z } from "zod";
@@ -77,4 +78,8 @@ export async function POST(req: NextRequest) {
         return ErrorResponse(error.message, 400);
     }
     
+}
+
+export async function GET(req: NextRequest) {
+    retrieveImages();
 }

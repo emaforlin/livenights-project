@@ -16,7 +16,7 @@ datasource db {
 
 model TicketOrder {
   id Int @id @default(autoincrement())
-  uid String @default(uuid())
+  uid String @default(uuid()) @unique
   description String
   createdAt DateTime @default(now())
   usedAt DateTime?

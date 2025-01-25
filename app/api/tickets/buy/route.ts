@@ -1,7 +1,7 @@
 import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { NextRequest } from "next/server";
 import { BuyTicketProcess, PayloadOrder } from "@/app/lib/tickets";
-import { ErrorParsingBody, ErrorPaymentFailure } from "../../errors";
+import { ErrorParsingBody } from "../../errors";
 import { z, ZodError } from "zod";
 
 const orderPayloadSchema = z.object({

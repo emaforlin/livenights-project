@@ -1,6 +1,7 @@
 import { prisma } from "@/app/lib/db";
 import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { hash } from "bcrypt";
+import { getSession } from "@/app/lib/dal"
 import { NextRequest } from "next/server";
 import { z } from "zod";
 
@@ -28,6 +29,10 @@ const userRegisterSchema = z.object({
 
 export async function POST(req: NextRequest) {
     try {
+        if (req.method !== "POST") return ErrorResponse("method not allowed", 405);
+        const session = await getSession();
+        if (!session) return ErrorResponse("unauthorized", 401);
+        
         const body = await req.json();
         const newUser = userRegisterSchema.parse(body);
         

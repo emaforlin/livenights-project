@@ -6,8 +6,10 @@ import { ErrorUnauthorized } from "../../errors";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ uid: string }> }) {
     try {
-        const role = await getUserRole();
+        if (req.method !== "GET") 
+            return ErrorResponse("method not allowed", 405);
 
+        const role = await getUserRole();
         if (!["PRODUCER", "STAFF"].includes(role??"")) 
             return ErrorResponse(ErrorUnauthorized.message, 401);
 

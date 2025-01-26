@@ -3,10 +3,17 @@ import { prisma } from "@/app/lib/db";
 import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { Event, User } from "@prisma/client";
 import { EventDetails } from "@/types/event";
+import { getSession, getUserRole } from "@/app/lib/dal";
 
 export async function GET(req: NextRequest) {
-    const producerId = req.nextUrl.searchParams.get("producer");
     try {
+        // Security checks
+        if (req.method !== "GET") return ErrorResponse("method not allowed", 405);
+        
+        const session = await getSession();
+        if (!session) return ErrorResponse("unauthorized", 401);
+
+        const producerId = req.nextUrl.searchParams.get("producer");
         let events: EventDetails[]|(Event&{producer: User})[];
         if (producerId) {
             events = await prisma.event.findMany({
@@ -48,10 +55,11 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
-        // const session = await getSession();
-        // if (!session) {
-        //     return ErrorResponse("unauthorized", 401);
-        // }
+        // Security checks
+        if (req.method !== "POST") return ErrorResponse("method not allowed", 405);
+        
+        const role = await getUserRole();
+        if (role !== "PRODUCER") return ErrorResponse("forbidden",403);
         
         const reqBody = await req.json();
         const expectedFields: (keyof Event)[] = ["title", "description", "producer_id", "date", "location", "image"];

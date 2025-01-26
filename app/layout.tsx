@@ -20,7 +20,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
                 <SessionProvider>
                     <RoleProvider>
                         <UserTicketsProvider>
-                            <SidebarProvider>
+                            <SidebarProvider defaultOpen={false}>
                                 <div className="flex h-screen">
                                     <AppSidebar />
                                 </div>

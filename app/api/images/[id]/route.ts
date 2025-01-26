@@ -16,5 +16,5 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
             "Content-Type": coverImg.filetype,
             "Content-Length": coverImg.file.byteLength.toString(),
         }
-    })
+    });
 }

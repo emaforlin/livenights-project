@@ -17,16 +17,16 @@ export const RoleProvider = ({ children } : { children: ReactNode }) => {
 
     useEffect(() => {
         if (session?.user?.role!) {
-          setRole(session.user.role!);
+            setRole(session.user.role!);
         }
-      }, [session]);
+    }, [session]);
 
     return (
         <RoleContext.Provider value={{ role, setRole }}>
             {children}
         </RoleContext.Provider>
-    )
-}
+    );
+};
 
 export const useRole = () => {
     const context = useContext(RoleContext);
@@ -35,4 +35,4 @@ export const useRole = () => {
         throw new Error("useRole must be used within a RoleProvider");
     }
     return context;
-}
+};

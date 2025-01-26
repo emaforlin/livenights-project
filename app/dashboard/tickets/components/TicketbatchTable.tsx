@@ -2,17 +2,16 @@ import { DataTable } from "@/components/ui/data-table";
 import columns from "./columns";
 import { useEffect } from "react";
 import { useTicketContext } from "@/context/TicketsContext";
-import { toast } from "@/hooks/use-toast";
 
 
 export function TicketBatchTable() {
-  const { ticketBatches, fetchTicketBatches } = useTicketContext();
+    const { ticketBatches, fetchTicketBatches } = useTicketContext();
   
-  useEffect(() => {
-    fetchTicketBatches();
-  }, [])
+    useEffect(() => {
+        fetchTicketBatches();
+    }, []);
   
-  return (
-    <DataTable columns={columns} data={ticketBatches} /> 
-  )
+    return (
+        <DataTable columns={columns} data={ticketBatches} /> 
+    );
 }

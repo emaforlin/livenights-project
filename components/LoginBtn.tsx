@@ -1,5 +1,5 @@
-import { signIn } from 'next-auth/react'
-import React from 'react'
+import { signIn } from 'next-auth/react';
+import React from 'react';
 import { Button } from './ui/button';
 
 type LoginBtnProps ={
@@ -9,14 +9,14 @@ type LoginBtnProps ={
 }
 
 const LoginBtn = ({provider, redirectTo, children}: LoginBtnProps) => {
-  return (
-    <Button variant="outline" className="w-full"
-      onClick={async () => {
-        await signIn(provider, {redirectTo: redirectTo})
-        }
-      }>{children}
-    </Button>
-  )
-}
+    return (
+        <Button variant="outline" className="w-full"
+            onClick={async () => {
+                await signIn(provider, {redirectTo: redirectTo});
+            }
+            }>{children}
+        </Button>
+    );
+};
 
-export default LoginBtn
+export default LoginBtn;

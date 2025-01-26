@@ -1,6 +1,6 @@
 "use client";
 
-import { Event, TicketBatch } from "@prisma/client"
+import { Event, TicketBatch } from "@prisma/client";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 type TicketsContextType = {
@@ -29,11 +29,11 @@ export const TicketsProvider = ({ children }: { children: ReactNode }) => {
                 const data: Event = await res.json();
                 setEvent(data);
             }
-        } catch (error: any) {
-            console.log("DEBUG:", error.message);
+        } catch (error: unknown) {
+            console.log(error);
             setEvent(undefined);
         }
-    }
+    };
 
 
     const fetchTicketBatches = async () => {
@@ -44,27 +44,27 @@ export const TicketsProvider = ({ children }: { children: ReactNode }) => {
 
             const data: TicketBatch[] = await res.json();
             setTicketBatches(data);
-        } catch (error: any) {
+        } catch (error: unknown) {
+            console.log(error);
             setTicketBatches([]);
-            console.log(error.message);
         } finally {
             setLoadingBatches(false);
         }
-    }
+    };
 
     useEffect(() => {
         if (eventId) {
             fetchTicketBatches();
             fetchEvent();
         }
-    }, [eventId])
+    }, [eventId]);
 
     return (
         <TicketsContext.Provider value={{loadingBatches, setEventId,ticketBatches, fetchTicketBatches, event}}>
             {children}
         </TicketsContext.Provider>
-    )
-}
+    );
+};
 
 export const useTicketContext = () => {
     const context = useContext(TicketsContext);
@@ -72,6 +72,6 @@ export const useTicketContext = () => {
         throw new Error("useTicketContext must be used within a TicketProvider");
     }
     return context;
-}
+};
 
 

@@ -19,7 +19,7 @@ export async function BuyTicketProcess(payload: Omit<PayloadOrder, "description"
     const ticketBatch: TicketBatch|null = await prisma.ticketBatch.findUnique(
         { 
             where: { 
-            id: payload.batchId,
+                id: payload.batchId,
                 AND: {
                     active: true,
                     end_date: { gt: today },
@@ -40,19 +40,19 @@ export async function BuyTicketProcess(payload: Omit<PayloadOrder, "description"
     });
 
 
-      const createdOrders = await Promise.all(
+    const createdOrders = await Promise.all(
         Array.from({ length: payload.quantity }, async () => {
-          return prisma.ticketOrder.create({
-            data: {
-              description: `Ticket para ${event.title}`,
-              user_id: payload.userId,
-              event_id: payload.eventId,
-              batch_id: payload.batchId,
-              createdAt: new Date(),
-            },
-          });
+            return prisma.ticketOrder.create({
+                data: {
+                    description: `Ticket para ${event.title}`,
+                    user_id: payload.userId,
+                    event_id: payload.eventId,
+                    batch_id: payload.batchId,
+                    createdAt: new Date(),
+                },
+            });
         })
-      );
+    );
 
 
 

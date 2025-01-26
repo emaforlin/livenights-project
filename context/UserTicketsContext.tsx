@@ -1,7 +1,7 @@
 "use client";
 
 import { TicketData } from "@/types/event";
-import { TicketBatch, TicketOrder, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 type UserTicketsContextType = {
@@ -24,10 +24,11 @@ export const UserTicketsProvider = ({ children }: { children: ReactNode }) => {
             const res = await fetch(`/api/users/${userId}`);
             if (!res.ok) throw new Error("failed to fetch user");
             setUserData(await res.json());
-        } catch (error: any) {
+        } catch (error: unknown) {
+            console.log(error);
             setUserData(undefined);
         }
-    }
+    };
 
     const fetchUserTickets = async () => {
         try {
@@ -37,23 +38,24 @@ export const UserTicketsProvider = ({ children }: { children: ReactNode }) => {
             const data = await res.json();
             setTickets(data);
         } catch (error) {
+            console.log(error);
             setTickets(undefined);
         }
-    }
+    };
 
     useEffect(() => {
         if (userId) {
             fetchUser();
             fetchUserTickets();
         }
-    }, [userId])
+    }, [userId]);
 
     return (
         <UserTicketsContext.Provider value={{setUser: setUserId, user, fetchUserTickets, tickets}}>
             {children}
         </UserTicketsContext.Provider>
-    )
-}
+    );
+};
 
 export const useUserTicketContext = () => {
     const context = useContext(UserTicketsContext);
@@ -61,4 +63,4 @@ export const useUserTicketContext = () => {
         throw new Error("useUserTicketsContext must be used within a UserTicketsProvider");
     }
     return context;
-}
+};

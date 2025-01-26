@@ -25,7 +25,7 @@ const stringSchema = z.string();
 
 
 export async function POST(req: NextRequest) {
-    const formData = await req.formData()
+    const formData = await req.formData();
 
     const rawFile = formData.get("file") as File;
     const rawFileName = formData.get("filename") as string;
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     try {
         const session = await getSession();
         if (!session) {
-            return ErrorResponse("unauthorized", 401)
+            return ErrorResponse("unauthorized", 401);
         }
 
         const userId = session.user?.id;
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
 
         const producer = await prisma.user.findUnique({
             where: {id: parseInt(userId)},
-        })
+        });
 
         if (!producer) {
             return ErrorResponse("producer data not found", 404);
@@ -65,16 +65,16 @@ export async function POST(req: NextRequest) {
                     }
                 }
             }
-        })
+        });
         
         return GenericResponse(JSON.stringify({
             id: dbImage.id,
             name: dbImage.filename
-        }), 200)
+        }), 200);
 
-    } catch (error: any) {
-        console.log(error.message);
-        return ErrorResponse(error.message, 400);
+    } catch (error: unknown) {
+        console.log(error);
+        return ErrorResponse("bad request", 400);
     }
     
 }

@@ -1,7 +1,6 @@
 "use client";
 import { useRole } from '@/context/RoleContext';
-import { useSession } from 'next-auth/react'
-import { ReactNode } from 'react'
+import { ReactNode } from 'react';
 
 const PermissionWrapper = ({ allowedRoles, children } : { allowedRoles: string[], children: ReactNode }) => {
     const { role } = useRole();
@@ -10,6 +9,6 @@ const PermissionWrapper = ({ allowedRoles, children } : { allowedRoles: string[]
         return null;
     }
     return children;
-}
+};
 
-export default PermissionWrapper
+export default PermissionWrapper;

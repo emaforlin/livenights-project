@@ -1,14 +1,10 @@
 "use client";
 
-import { useEventContext } from "@/context/EventContext";
 import { EventDropdown  } from "./components/EventDropdown";
-import { useTicketContext } from "@/context/TicketsContext";
-import { Event } from "@prisma/client";
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+
 import { TicketBatchTable } from "./components/TicketbatchTable";
 
-function TicketsDashboard() {
+export default function TicketsDashboard() {
     return (
         <div className="w-full">
             <div className="mx-4 flex-grow">
@@ -17,6 +13,5 @@ function TicketsDashboard() {
                 <TicketBatchTable />
             </div>
         </div>
-    )
+    );
 }
-export default TicketsDashboard;

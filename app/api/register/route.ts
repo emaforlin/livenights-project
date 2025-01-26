@@ -2,7 +2,7 @@ import { prisma } from "@/app/lib/db";
 import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { hash } from "bcrypt";
 import { NextRequest } from "next/server";
-import { z, ZodError } from "zod";
+import { z } from "zod";
 
 const userRegisterSchema = z.object({
     email: z
@@ -24,7 +24,7 @@ const userRegisterSchema = z.object({
         .min(8, {message: "password must be at least 8 characters"})
         .max(70, {message: "password cannot be longer than 70 characters"})
         .trim(),
-})
+});
 
 export async function POST(req: NextRequest) {
     try {
@@ -49,17 +49,17 @@ export async function POST(req: NextRequest) {
                     }
                 }
             }
-        }})
+        }});
 
         if (!createdUser) throw new Error("failed to insert user data into db");
 
         return GenericResponse("User created", 201);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         if (error instanceof z.ZodError) {
-            return GenericResponse(error.errors, 400)
-        } else {
-            return ErrorResponse("could not created user account", 400)
-        }
+            return GenericResponse(error.errors, 400);
+        } 
+        return ErrorResponse("could not created user account", 400);
+        
     }
 }

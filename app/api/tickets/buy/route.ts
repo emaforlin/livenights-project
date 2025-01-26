@@ -25,14 +25,14 @@ export async function POST(req: NextRequest) {
 
         return GenericResponse(orders, 200);
     
-    } catch (error: any) {
-        console.log(error.message);
+    } catch (error: unknown) {
+        console.log("bad request:",error);
         
         if (error instanceof ZodError) {
             const err = error.format();
             return GenericResponse(err, 400);
         }
 
-        return ErrorResponse("something went wrong", 400)
+        return ErrorResponse("something went wrong", 400);
     }
 }

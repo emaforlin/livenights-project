@@ -34,7 +34,7 @@ function SingleEvent({ params }: { params: Promise<{eventId: string }>}) {
         setEventId(id);
         fetchTicketBatches();
         fetchOneEvent(id);
-    });
+    }, [id]);
 
     if (loading) {
         return (

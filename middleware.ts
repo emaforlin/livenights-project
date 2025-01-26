@@ -3,24 +3,23 @@ import { getToken } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest) {
     const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+    const pathname = req.nextUrl.pathname
+    const isOnDashboard = pathname.startsWith("/dashboard");
+    const isOnSettings = pathname.startsWith("/settings");
+    const isOnUserDashboard = pathname.startsWith("/user");
+    const isAuthAPIRoute = pathname.startsWith("/api/auth");
 
-    const isOnDashboard = req.nextUrl.pathname.startsWith("/dashboard");
-    const isOnSettings = req.nextUrl.pathname.startsWith("/settings");
-    const isOnUserDashboard = req.nextUrl.pathname.startsWith("/user");
-
-
-    if (!token) {
-        return NextResponse.redirect(new URL("/login", req.url));
+    if (!token && !isAuthAPIRoute) {
+        return NextResponse.redirect(new URL("/auth/login", req.url));
     }
 
-    const roles = (token.role as string).split(" ");
-    console.log("Roles:", roles);
+    const role = (token?.role as string) || "GUEST";
 
-    if (isOnDashboard && !roles.includes("PRODUCER")) {
+    if (isOnDashboard && role !== "PRODUCER") {
         return NextResponse.redirect(new URL("/", req.url));
     }
 
-    if (isOnUserDashboard && !roles.includes("USER")) {
+    if (isOnUserDashboard && role !== "USER") {
         return NextResponse.redirect(new URL("/", req.url));
     }
 
@@ -35,6 +34,7 @@ export const config =  {
     matcher: [
         "/dashboard/:path*",
         "/settings/:path*",
-        "/user/:path*"
+        "/user/:path*",
+        "/api/:path*"
     ],
 };

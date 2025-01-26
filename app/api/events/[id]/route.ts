@@ -1,3 +1,4 @@
+import { getSession, getUserRole } from "@/app/lib/dal";
 import { prisma } from "@/app/lib/db";
 import { ErrorResponse, GenericResponse } from "@/utils/responses";
 
@@ -5,6 +6,12 @@ export async function DELETE(request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        // Security checks
+         if (request.method !== "DELETE") return ErrorResponse("method not allowed", 405);
+                
+        const role = await getUserRole();
+        if (role !== "PRODUCER") return ErrorResponse("forbidden",403);
+
         const eventId = (await params).id;
         const deleted = await prisma.event.delete({where: {id: parseInt(eventId)}});
         if (!deleted) throw new Error("failed to delete event");
@@ -20,8 +27,14 @@ export async function DELETE(request: Request,
 export async function GET(request: Request, 
     { params }: { params: Promise<{ id: string }> }
 ) {
-    const eventId = (await params).id;
+    // Security checks
+    if (request.method !== "GET") return ErrorResponse("method not allowed", 405);
+        
+    const session = await getSession();
+    if (!session) return ErrorResponse("forbidden", 401);
 
+    
+    const eventId = (await params).id;
     const event = await prisma.event.findUnique({
         where: {id: parseInt(eventId) },
         include: {
@@ -40,8 +53,14 @@ export async function PUT(req: Request, { params }:
     { params:Promise<{ id: string }> }) {
     
     try {
-        const eventId = (await params).id;
+        // Security checks
+        if (req.method !== "PUT") return ErrorResponse("method not allowed", 405);
+        
+        const role = await getUserRole();
+        if (role !== "PRODUCER") return ErrorResponse("forbidden", 403);
 
+        
+        const eventId = (await params).id;
         const reqBody = await req.json();
             
         const updatedEvent = await prisma.event.update({

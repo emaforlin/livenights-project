@@ -1,18 +1,46 @@
+import { getSession, getUserRole } from "@/app/lib/dal";
 import { prisma } from "@/app/lib/db";
-import { GenericResponse } from "@/utils/responses";
+import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { NextRequest } from "next/server";
+import { ErrorUnauthorized } from "../../errors";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ uid: string }> }) {
-    const ticketUid = (await params).uid;
+    try {
+        const role = await getUserRole();
 
-    const ticketUsedAt = await prisma.ticketOrder.findUnique({
-        where: {
-            uid: ticketUid
-        },
-        select: {
-            usedAt: true
+        if (!["PRODUCER", "STAFF"].includes(role??"")) 
+            return ErrorResponse(ErrorUnauthorized.message, 401);
+
+
+        const ticketUid = (await params).uid;
+        const foundTicket = await prisma.ticketOrder.findUnique({
+            where: {
+                uid: ticketUid
+            },
+        });
+
+        if (!foundTicket) return ErrorResponse("error ticket not found", 404);
+
+        if (foundTicket.usedAt) {
+            return GenericResponse({
+                message: "ticket already used",
+                valid: false,
+                used_at: foundTicket.usedAt,
+            }, 200);
+        } else {
+            const res = await prisma.ticketOrder.update({
+                where: { uid: ticketUid },
+                data: {
+                    usedAt: new Date()
+                }
+            });
+            return GenericResponse({
+                message: "valid ticket",
+                valid: true,
+                used_at: res.usedAt
+            }, 200);   
         }
-    });
-
-    return GenericResponse({used: !!ticketUsedAt}, 200);
+    } catch (error) {
+        return ErrorResponse("bad request", 400);
+    }
 }

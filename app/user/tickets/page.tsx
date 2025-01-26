@@ -18,7 +18,7 @@ function UserTicketsPage() {
         }
         fetchUserTickets();
 
-    }, [userId, fetchUserTickets, session, setUser, status]);
+    }, [userId, session, status]);
 
     return (
         <div className="m-5 w-full">

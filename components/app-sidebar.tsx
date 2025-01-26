@@ -6,10 +6,13 @@ import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
+    SidebarMenu,
+    SidebarMenuItem,
     SidebarRail,
 } from "@/components/ui/sidebar";
-import SigninBtn from "./auth/SigninBtn";
 import { getSession } from "@/app/lib/dal";
+import RedirectBtn from "./RedirectBtn";
+import { DropdownMenu } from "./ui/dropdown-menu";
 
 type UserData = {
   firstname: string
@@ -44,7 +47,9 @@ export async function AppSidebar({ ...props }: React.ComponentProps<typeof Sideb
                 <NavMain />
             </SidebarContent>
             <SidebarFooter>
-                { session && (<NavUser user={user} />) || <SigninBtn/> }
+                { session && (<NavUser user={user} />) || 
+                    <RedirectBtn href="/auth/login" className="truncate bg-black">Iniciar Sesión</RedirectBtn> 
+                }
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>

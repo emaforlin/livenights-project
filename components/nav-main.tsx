@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, Search, Ticket, UserPen } from "lucide-react";
+import { Home, LayoutDashboard, Search, Ticket, UserPen } from "lucide-react";
 
 import {
     Collapsible,
@@ -17,6 +17,14 @@ import Link from "next/link";
 import PermissionWrapper from "./PermissionWrapper";
 import { usePathname } from "next/navigation";
 import { VisibilityWrapper } from "./VisibilityWrapper";
+
+const routes = [
+    {
+        title: "Inicio",
+        icon: Home,
+        url: "/"
+    }
+]
 
 const producerItems = [
     {
@@ -63,9 +71,30 @@ const guestItems = [
 
 export function NavMain() {
     const pathname = usePathname();
-    return (
+    return (<>
         <SidebarGroup>
-            <PermissionWrapper allowedRoles={["PRODUCER"]}> 
+            <SidebarMenu>
+                {routes.map((item) => (
+                    <Collapsible
+                        key={item.title}
+                        asChild
+                        className="group/collapsible"
+                        >
+                            <SidebarMenuItem>
+                                <SidebarMenuButton tooltip={item.title}>
+                                    {item.icon && <item.icon />}
+                                    <Link href={item.url}>
+                                        <span>{item.title}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                    </Collapsible>
+                ))}
+            </SidebarMenu>
+        </SidebarGroup>
+        
+        <PermissionWrapper allowedRoles={["PRODUCER"]}>
+            <SidebarGroup>
                 <SidebarGroupLabel>Seccion Productor</SidebarGroupLabel>
                 <SidebarMenu>
                     {producerItems.map((item) => (
@@ -87,9 +116,11 @@ export function NavMain() {
                         </Collapsible>
                     ))}
                 </SidebarMenu>
-            </PermissionWrapper>
+            </SidebarGroup>
+        </PermissionWrapper>
 
-            <PermissionWrapper allowedRoles={["USER"]}>
+        <PermissionWrapper allowedRoles={["USER"]}>
+            <SidebarGroup>
                 <SidebarGroupLabel>Seccion Usuario</SidebarGroupLabel>
                 <SidebarMenu>
                     {userItems.map((item) => (
@@ -111,9 +142,12 @@ export function NavMain() {
                         </Collapsible>
                     ))}
                 </SidebarMenu>
-            </PermissionWrapper>
+            </SidebarGroup>
+        </PermissionWrapper>
 
-            <PermissionWrapper allowedRoles={["GUEST"]}>
+
+        <PermissionWrapper allowedRoles={["GUEST"]}>
+            <SidebarGroup>
                 <SidebarGroupLabel>Seccion Usuario</SidebarGroupLabel>
                 <SidebarMenu>
                     <VisibilityWrapper visible={!pathname.endsWith("login")}>
@@ -137,7 +171,7 @@ export function NavMain() {
                         ))}
                     </VisibilityWrapper>
                 </SidebarMenu>
-            </PermissionWrapper>
-        </SidebarGroup>
+            </SidebarGroup>
+        </PermissionWrapper></>
     );
 }

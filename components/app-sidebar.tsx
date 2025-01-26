@@ -1,16 +1,15 @@
-import * as React from "react"
+import * as React from "react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarRail,
-} from "@/components/ui/sidebar"
-import SigninBtn from "./auth/SigninBtn"
-import { getSession, getUserRole } from "@/app/lib/dal"
-import { RoleProvider } from "@/context/RoleContext"
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarRail,
+} from "@/components/ui/sidebar";
+import SigninBtn from "./auth/SigninBtn";
+import { getSession } from "@/app/lib/dal";
 
 type UserData = {
   firstname: string
@@ -20,35 +19,34 @@ type UserData = {
 }
 
 export async function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {  
-  const session = await getSession();
-  const role = await getUserRole();
+    const session = await getSession();
 
-  let user: UserData = {
-    firstname: "",
-    lastname: "",
-    email: "",
-    avatar: ""
-  };
+    let user: UserData = {
+        firstname: "",
+        lastname: "",
+        email: "",
+        avatar: ""
+    };
 
-  if (session && session.user) {
-    const names = session.user.name!.split(" ");
-    user = {
-      firstname: names[0] || "",
-      lastname: names[1] || "",
-      email: session.user.email!,
-      avatar: session.user.image!,
+    if (session && session.user) {
+        const names = session.user.name!.split(" ");
+        user = {
+            firstname: names[0] || "",
+            lastname: names[1] || "",
+            email: session.user.email!,
+            avatar: session.user.image!,
+        };
     }
-  }
 
-  return (
-      <Sidebar collapsible="icon" {...props}>
-        <SidebarContent>
-          <NavMain />
-        </SidebarContent>
-        <SidebarFooter>
-          { session && (<NavUser user={user} />) || <SigninBtn/> }
-        </SidebarFooter>
-        <SidebarRail />
-      </Sidebar>
-  )
+    return (
+        <Sidebar collapsible="icon" {...props}>
+            <SidebarContent>
+                <NavMain />
+            </SidebarContent>
+            <SidebarFooter>
+                { session && (<NavUser user={user} />) || <SigninBtn/> }
+            </SidebarFooter>
+            <SidebarRail />
+        </Sidebar>
+    );
 }

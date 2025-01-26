@@ -2,17 +2,32 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/app/lib/db";
 import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { Event, User } from "@prisma/client";
-import { getSession } from "@/app/lib/dal";
+import { EventDetails } from "@/types/event";
 
 export async function GET(req: NextRequest) {
     const producerId = req.nextUrl.searchParams.get("producer");
-    
     try {
-        let events: any;
+        let events: EventDetails[]|(Event&{producer: User})[];
         if (producerId) {
             events = await prisma.event.findMany({
                 where: { producer_id: parseInt(producerId) },
-                include: { producer: true } 
+                select: {
+                    id: true,
+                    date: true,
+                    description: true,
+                    image: true,
+                    location: true,
+                    TicketBatch: true,
+                    title: true,
+                    producer: true,
+                    producer_id: true,
+                    uid: true,
+                    _count: {
+                        select: {
+                            TicketOrder: true
+                        }
+                    }
+                }
             });
         } else {
             events = await prisma.event.findMany({ 
@@ -23,7 +38,8 @@ export async function GET(req: NextRequest) {
             return ErrorResponse("events not found", 404);
         }
         return GenericResponse(events, 200);
-    } catch (error) {
+    } catch (error: unknown) {
+        console.log(error);
         return ErrorResponse("error fetching events", 400);
     }
 
@@ -38,8 +54,8 @@ export async function POST(req: NextRequest) {
         // }
         
         const reqBody = await req.json();
-        const expectedFields: (keyof Event)[] = ["title", "description", "producer_id", "date", "location", "image"]
-        const missingFields = expectedFields.filter(f => !(f in reqBody))
+        const expectedFields: (keyof Event)[] = ["title", "description", "producer_id", "date", "location", "image"];
+        const missingFields = expectedFields.filter(f => !(f in reqBody));
         
         if (missingFields.length > 0) {
             console.log("missing fields:",missingFields);
@@ -73,8 +89,8 @@ export async function POST(req: NextRequest) {
 
         return GenericResponse(newEvent, 201);
 
-    } catch (error: any) {
-        console.log("something went wrong: ", error.message);
+    } catch (error: unknown) {
+        console.log("something went wrong: ", error);
         return ErrorResponse("something went wrong :(", 400);
     }
 }

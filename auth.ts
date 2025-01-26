@@ -1,14 +1,15 @@
-import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google"
+import NextAuth, { User } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "./app/lib/db";
 import { compare } from "bcryptjs";
+import { NextRequest } from "next/server";
 
 export const { handlers, signIn, signOut, auth} = NextAuth({
     providers: [GoogleProvider, CredentialsProvider({
-        async authorize(credentials: {email: string; password: string}) {
+        async authorize(credentials:  Partial<Record<string, unknown>>): Promise<User | null> {
             if (!credentials) return null;
-            const {email, password} = credentials;
+            const {email, password} = credentials as { email: string; password: string };
             
             const dbUser = await prisma.user.findUnique({where: {email}, include: {role: true}});
 
@@ -19,11 +20,11 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
             if (!isCorrectPassword) throw new Error("Email o contraseña incorrectos.");
 
             return {
-                id: dbUser.id,
+                id: String(dbUser.id),
                 name: dbUser.name,
                 email: dbUser.email,
-                role: dbUser.role
-            }
+                role: dbUser.role.name,
+            };
         },
     })],
     callbacks: {

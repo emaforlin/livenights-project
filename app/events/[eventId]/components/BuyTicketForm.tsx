@@ -26,10 +26,10 @@ export function BuyTicketForm({className, eventId}: Props) {
     const [qty, setQty] = useState<number>(1);
 
 
-    const onSubmit = async (e: any) => {
+    const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (status == "unauthenticated") router.replace("/login")
+        if (status == "unauthenticated") router.replace("/login");
 
         if (batch && qty) {
             const payload: Omit<PayloadOrder, "description"> = {
@@ -37,7 +37,7 @@ export function BuyTicketForm({className, eventId}: Props) {
                 eventId: eventId,
                 quantity: qty,
                 userId: parseInt(session!.user!.id!),
-            }
+            };
             console.log(payload);
             try {
                 const res = await fetch("/api/tickets/buy", {
@@ -51,11 +51,11 @@ export function BuyTicketForm({className, eventId}: Props) {
                 toast({
                     title: "Compra exitosa!.",
                     description: "Puedes ver tus tickets en la sección Mis Tickets."
-                    });
-            } catch (error: any) {
+                });
+            } catch (error: unknown) {
                 toast({
                     title: "Algo salió mal...",
-                    description: error.message,
+                    description: (error as Error).message||"",
                     variant: "destructive"
                 });
             }  
@@ -65,43 +65,43 @@ export function BuyTicketForm({className, eventId}: Props) {
 
     const now = new Date();
     return (
-    <form onSubmit={onSubmit}>
-        <Select
-            onOpenChange={fetchTicketBatches}
-            onValueChange={(value: string) => {
-                const selectedBatch = ticketBatches.find((item) => String(item.id) === value);
-                if (selectedBatch) {
-                    setBatch(selectedBatch);
-                }
-            } }>
+        <form onSubmit={onSubmit} className={className}>
+            <Select
+                onOpenChange={fetchTicketBatches}
+                onValueChange={(value: string) => {
+                    const selectedBatch = ticketBatches.find((item) => String(item.id) === value);
+                    if (selectedBatch) {
+                        setBatch(selectedBatch);
+                    }
+                } }>
 
-            <SelectTrigger className="w-[170px]">
-                <SelectValue placeholder={batch?.name || "Elije una opción"} />
-            </SelectTrigger>
-            <SelectContent>
-                {ticketBatches.map((item: TicketBatch) => {
-                    const isDisabled = item.quantity < 1 || !item.active || new Date(item.end_date) < now || new Date(item.start_date) > now;
-                    return (
-                        <SelectItem key={item.id}
-                        value={String(item.id)}
-                        disabled={isDisabled}
-                        >
-                            {item.name} {item.quantity < 1 && <p className="font-bold">SOLD OUT</p>}
-                        </SelectItem>);
-                }
-            )}
-            </SelectContent>
+                <SelectTrigger className="w-[170px]">
+                    <SelectValue placeholder={batch?.name || "Elije una opción"} />
+                </SelectTrigger>
+                <SelectContent>
+                    {ticketBatches.map((item: TicketBatch) => {
+                        const isDisabled = item.quantity < 1 || !item.active || new Date(item.end_date) < now || new Date(item.start_date) > now;
+                        return (
+                            <SelectItem key={item.id}
+                                value={String(item.id)}
+                                disabled={isDisabled}
+                            >
+                                {item.name} {item.quantity < 1 && <p className="font-bold">SOLD OUT</p>}
+                            </SelectItem>);
+                    }
+                    )}
+                </SelectContent>
 
-        </Select>
-        <VisibilityWrapper visible={!!batch}>
-            <div className="mt-5 space-y-4">
-                <p className="text-3xl break-words font-bold">$ {batch?.price}</p>
-                <Input type="number" placeholder="Cantidad"
-                    className="w-[170px]" value={qty || 1}
-                    onChange={(e) => setQty(Number(e.target.value))}/>
-                <Button type="submit">Comprar</Button>
-            </div>
-        </VisibilityWrapper>
-    </form>
-    )
+            </Select>
+            <VisibilityWrapper visible={!!batch}>
+                <div className="mt-5 space-y-4">
+                    <p className="text-3xl break-words font-bold">$ {batch?.price}</p>
+                    <Input type="number" placeholder="Cantidad"
+                        className="w-[170px]" value={qty || 1}
+                        onChange={(e) => setQty(Number(e.target.value))}/>
+                    <Button type="submit">Comprar</Button>
+                </div>
+            </VisibilityWrapper>
+        </form>
+    );
 }

@@ -1,12 +1,12 @@
-import { logout } from '@/app/lib/actions';
-import React from 'react'
+import { handleSignOut } from '@/app/lib/actions';
+import React from 'react';
 
 const LogoutBtn = () => {
-  return (
-    <form action={logout}>
-      <button>SignOut</button>
-    </form>
-  )
-}
+    return (
+        <form action={handleSignOut}>
+            <button>SignOut</button>
+        </form>
+    );
+};
 
-export default LogoutBtn
+export default LogoutBtn;

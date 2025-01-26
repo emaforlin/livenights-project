@@ -21,7 +21,8 @@ export async function GET(request: NextRequest,
 
         if (!userTickets) return ErrorResponse("no tickets found", 404);
         return GenericResponse(userTickets, 200);
-    } catch (error: any) {
-        return ErrorResponse(error.message, 404);
+    } catch (error: unknown) {
+        console.log("something went wrong: ",error);
+        return ErrorResponse("bad request", 400);
     }
 }

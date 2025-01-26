@@ -15,8 +15,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
         }
 
         return GenericResponse({ deleted: deleted.id }, 200);
-    } catch (error: any) {
-        console.log(error.message);
-        return ErrorResponse(error.message, 400);
+    } catch (error: unknown) {
+        console.log(error);
+        return ErrorResponse("bad request", 400);
     }
 }

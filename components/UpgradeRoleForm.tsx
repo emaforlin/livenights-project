@@ -18,11 +18,11 @@ const formSchema = z.object({
     safetyCheck: z.literal(true, {
         errorMap: () => ({message: "Debes aceptar para continuar."}),
     })
-})
+});
 
 export function UpgradeRoleForm() {
     const {data: session} = useSession();
-    const {role, setRole} = useRole();
+    const { setRole } = useRole();
     
     const router = useRouter();
 
@@ -49,7 +49,7 @@ export function UpgradeRoleForm() {
         });
         if (res.ok) {
             setRole("PRODUCER");
-            router.push("/settings")
+            router.push("/settings");
         }
 
     }
@@ -61,11 +61,11 @@ export function UpgradeRoleForm() {
                     control={form.control}
                     name="username"
                     render={({ field }) => (
-                    <FormItem>
-                        <FormLabel className="flex text-start text-lg">Nombre de la Organizacion</FormLabel>
-                        <FormControl>
-                            <Input placeholder="Livenights Producciones" type="text" {...field} />
-                        </FormControl>
+                        <FormItem>
+                            <FormLabel className="flex text-start text-lg">Nombre de la Organizacion</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Livenights Producciones" type="text" {...field} />
+                            </FormControl>
                             <FormDescription>Conviertete en productor de eventos de forma simple</FormDescription>
                             <FormMessage />
                         </FormItem>
@@ -75,22 +75,22 @@ export function UpgradeRoleForm() {
                     control={form.control}
                     name="safetyCheck"
                     render={({ field }) => (
-                    <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
-                        <FormControl>
-                            <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}  
-                            />
-                        </FormControl>
-                        <div className="leading-none">
-                            <FormLabel>Entiendo y acepto que esta accion sera irreversible.</FormLabel>
-                            <FormMessage />
-                        </div>
-                    </FormItem>
-                )}
-            />
+                        <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
+                            <FormControl>
+                                <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}  
+                                />
+                            </FormControl>
+                            <div className="leading-none">
+                                <FormLabel>Entiendo y acepto que esta accion sera irreversible.</FormLabel>
+                                <FormMessage />
+                            </div>
+                        </FormItem>
+                    )}
+                />
                 <Button type="submit" variant="destructive">Continuar</Button>
             </form>
         </Form>
-    )
+    );
 }

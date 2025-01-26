@@ -4,15 +4,17 @@ import { ErrorResponse, GenericResponse } from "@/utils/responses";
 export async function DELETE(request: Request, 
     { params }: { params: Promise<{ id: string }> }
 ) {
-    const eventId = (await params).id;
-
-    const {id} = await prisma.event.delete({where: {id: parseInt(eventId) }});
-
-    if (!id) {
-        return ErrorResponse(`event with id: ${eventId} not found`, 404)
+    try {
+        const eventId = (await params).id;
+        const deleted = await prisma.event.delete({where: {id: parseInt(eventId)}});
+        if (!deleted) throw new Error("failed to delete event");
+        return GenericResponse({
+            deleted: deleted.id
+        }, 200);
+    } catch (error: unknown) {
+        console.log(error);
+        return ErrorResponse("bad request", 400);
     }
-
-    return GenericResponse({"message": `deleted event with id: ${id}`}, 200);
 }
 
 export async function GET(request: Request, 
@@ -28,7 +30,7 @@ export async function GET(request: Request,
     });
 
     if (!event) {
-        return ErrorResponse(`event with id: ${eventId} not found`, 404)
+        return ErrorResponse(`event with id: ${eventId} not found`, 404);
     }
 
     return GenericResponse(event, 200);
@@ -38,33 +40,30 @@ export async function PUT(req: Request, { params }:
     { params:Promise<{ id: string }> }) {
     
     try {
-            // *****************************
-            // * check for `producer` role *
-            // *****************************
-            const eventId = (await params).id;
+        const eventId = (await params).id;
 
-            const reqBody = await req.json();
+        const reqBody = await req.json();
             
-            const updatedEvent = await prisma.event.update({
-                where: {id: parseInt(eventId)},
-                data: {
-                    title: reqBody.title,
-                    description: reqBody.description,
-                    date: new Date(reqBody.date),
-                    location: reqBody.location,
-                    producer_id: reqBody.producer_id,
-                },
-            });
+        const updatedEvent = await prisma.event.update({
+            where: {id: parseInt(eventId)},
+            data: {
+                title: reqBody.title,
+                description: reqBody.description,
+                date: new Date(reqBody.date),
+                location: reqBody.location,
+                producer_id: reqBody.producer_id,
+            },
+        });
 
-            if (!updatedEvent) {
-                return ErrorResponse(`event with id: ${eventId} not found`, 404)
-            }
-
-    
-            return GenericResponse(updatedEvent, 200);
-    
-        } catch (error: any) {
-            console.log("something went wrong: ", error.message);
-            return ErrorResponse("something went wrong :(", 400);
+        if (!updatedEvent) {
+            return ErrorResponse(`event with id: ${eventId} not found`, 404);
         }
+
+    
+        return GenericResponse(updatedEvent, 200);
+    
+    } catch (error: unknown) {
+        console.log("something went wrong: ", error);
+        return ErrorResponse("something went wrong :(", 400);
+    }
 }

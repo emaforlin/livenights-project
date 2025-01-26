@@ -12,6 +12,7 @@ export default function Home() {
                     width={700}
                     height={500}
                     className="flex justify-center"
+                    priority
                 />
             </main>
         </div>

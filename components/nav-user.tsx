@@ -82,7 +82,7 @@ export function NavUser({
                         <DropdownMenuGroup>
                             <DropdownMenuItem>
                                 <BadgeCheck />
-                Mi Cuenta
+                                Mi Cuenta
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                                 <SettingsBtn />

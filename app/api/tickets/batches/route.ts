@@ -105,7 +105,7 @@ export async function GET(req: NextRequest) {
         return GenericResponse(dbTicketBatches, 200);
 
     } catch (error: unknown) {
-        console.log(error);
+        console.log((error as Error).message);
         return ErrorResponse("bad request", 400);
     }
 }

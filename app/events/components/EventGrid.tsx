@@ -11,7 +11,7 @@ const EventGrid = () => {
     const { events, fetchActiveEvents } = useEventContext();
     useEffect(() => {
         fetchActiveEvents();
-    }, [fetchActiveEvents]);
+    }, []);
     console.log("events", events);
     return (
         <div className="flex justify-center">

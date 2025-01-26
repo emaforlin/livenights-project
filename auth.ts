@@ -15,7 +15,7 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
 
             if (!dbUser) throw new Error("Email o contraseña incorrectos.");
 
-            const isCorrectPassword = compare(password, dbUser.password!);
+            const isCorrectPassword = await compare(password, dbUser.password!);
 
             if (!isCorrectPassword) throw new Error("Email o contraseña incorrectos.");
 

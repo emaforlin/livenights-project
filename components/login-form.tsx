@@ -35,7 +35,7 @@ export function LoginForm({
         });
 
         if (!res || res.error || !res.ok) {
-            setError(res?.error || "Credenciales invalidas");
+            setError("Credenciales invalidas");
         } else {
             router.push("/events");
         }

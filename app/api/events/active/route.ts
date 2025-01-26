@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     if (req.method !== "GET") return ErrorResponse("method not allowed", 405);
 
     const role = await getUserRole();
-    if (["PRODUCER", "USER"].includes(role??"")) return ErrorResponse("forbidden",403);
+    if (!["PRODUCER", "USER"].includes(role??"")) return ErrorResponse("forbidden",403);
     
     const now = new Date();
 

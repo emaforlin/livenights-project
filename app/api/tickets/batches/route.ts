@@ -37,11 +37,11 @@ const ticketBatchSchema = z.object({
         .number( { message: "event_id field required" })
         .int()
         .gt(0, { message: "invalid event id" })
-})
+});
 
 export async function POST(req: NextRequest) {
     try {
-        const reqBody: any = await req.json();
+        const reqBody = await req.json();
 
         const result =  ticketBatchSchema.safeParse(reqBody);
 
@@ -81,9 +81,9 @@ export async function POST(req: NextRequest) {
 
         return GenericResponse(dbTB, 201);
 
-    } catch (error: any) {
-        console.log(error.message);
-        return ErrorResponse(error.message, 400);
+    } catch (error: unknown) {
+        console.log(error);
+        return ErrorResponse("bad request", 400);
     }
 }
 
@@ -104,7 +104,8 @@ export async function GET(req: NextRequest) {
         }
         return GenericResponse(dbTicketBatches, 200);
 
-    } catch (error: any) {
-        return ErrorResponse(error.message, 400);
+    } catch (error: unknown) {
+        console.log(error);
+        return ErrorResponse("bad request", 400);
     }
 }

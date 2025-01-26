@@ -5,5 +5,5 @@ export default function page() {
         <div className="mx-auto m-12">
             <NewEventForm />
         </div>
-    )
+    );
 }

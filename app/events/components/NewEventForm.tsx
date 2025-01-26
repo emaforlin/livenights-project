@@ -3,16 +3,16 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
 
 import { Event } from "@prisma/client";
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,7 @@ import { DatetimePicker } from "../../../components/datetime-picker";
 import { Card } from "../../../components/ui/card";
 import { useSession } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
-import { VisibilityWrapper } from "@/components/VisibilityWrapper"
+import { VisibilityWrapper } from "@/components/VisibilityWrapper";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -29,7 +29,7 @@ const fileSchema = z.custom<File>((file) => {
 
     const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
     if (!allowedTypes.includes(file.type)) {
-        console.log("File type:", file.type)
+        console.log("File type:", file.type);
         // throw new Error("Solo se acepta formato PNG y JPG");
         return false;
     }
@@ -65,7 +65,7 @@ const creationFormSchema = z.object({
         .max(200, {message: "Ubicacion demasiado extensa."}),
     
     image: fileSchema,
-})
+});
 
 
 export function NewEventForm() {
@@ -120,7 +120,7 @@ export function NewEventForm() {
                 await fetch("/api/images", {
                     method: "POST",
                     body: formData,
-                })
+                });
 
                 mainForm.reset();
                 
@@ -129,16 +129,16 @@ export function NewEventForm() {
                     description: "Puedes continuar la configuración desde la pestaña Mis Eventos",
                     variant: "default"
                 });
-                router.push("/dashboard")
+                router.push("/dashboard");
             } else {
                 throw new Error("no session found");
             }
-        } catch (error: any) {
-           toast({
-            title: "Algo no ha salido según lo esperado.", 
-            description: error.message || "Intenta de nuevo mas tarde :(",
-            variant: "destructive"
-        });
+        } catch (error: unknown) {
+            toast({
+                title: "Algo no ha salido según lo esperado.", 
+                description: (error as Error).message || "Intenta de nuevo mas tarde :(",
+                variant: "destructive"
+            });
         }
     }
 
@@ -153,15 +153,15 @@ export function NewEventForm() {
                                 control={ mainForm.control }
                                 name="title"
                                 render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Título</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Fiesta de la agricultura" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
+                                    <FormItem>
+                                        <FormLabel>Título</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Fiesta de la agricultura" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
                                         Usa un título distintivo para que tu evento sea encontrado facilmente.
-                                    </FormDescription>
-                                    <FormMessage />
+                                        </FormDescription>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
@@ -170,15 +170,15 @@ export function NewEventForm() {
                                 control={ mainForm.control}
                                 name="datetime"
                                 render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="block mb-1">Fecha a realizarse</FormLabel>
-                                    <FormControl>
-                                        <DatetimePicker {...field}/>
-                                    </FormControl>
-                                    <FormDescription>
+                                    <FormItem>
+                                        <FormLabel className="block mb-1">Fecha a realizarse</FormLabel>
+                                        <FormControl>
+                                            <DatetimePicker {...field}/>
+                                        </FormControl>
+                                        <FormDescription>
                                         Elije la fecha de tu evento.
-                                    </FormDescription>
-                                    <FormMessage />
+                                        </FormDescription>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
@@ -187,16 +187,16 @@ export function NewEventForm() {
                                 control={ mainForm.control}
                                 name="description"
                                 render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Descripción</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="La fiesta que celebra el..." {...field} />
-                                    </FormControl>
-                                    <FormDescription>
+                                    <FormItem>
+                                        <FormLabel>Descripción</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="La fiesta que celebra el..." {...field} />
+                                        </FormControl>
+                                        <FormDescription>
                                         Añade una descripción a tu evento.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
                                 )}
                             />
 
@@ -204,19 +204,19 @@ export function NewEventForm() {
                                 control={ mainForm.control}
                                 name="location"
                                 render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Ubicación</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Plaza San Martin, Esperanza, Santa Fe, Argentina" {...field} />
-                                    </FormControl>
-                                    <FormDescription>
+                                    <FormItem>
+                                        <FormLabel>Ubicación</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Plaza San Martin, Esperanza, Santa Fe, Argentina" {...field} />
+                                        </FormControl>
+                                        <FormDescription>
                                         Indica la ubicacion en donde se realizara el evento.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
                                 )}
                             />
-                            <Button onClick={ async () => { await mainForm.trigger(["title", "datetime", "description", "location"]) && setStage(1) } }>
+                            <Button onClick={ async () => { await mainForm.trigger(["title", "datetime", "description", "location"]) && setStage(1); } }>
                                 Siguiente
                             </Button>
                         </VisibilityWrapper>
@@ -225,27 +225,32 @@ export function NewEventForm() {
                             <FormField
                                 control={ mainForm.control}
                                 name="image"
-                                render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Imagen</FormLabel>
-                                    <FormControl>
-                                        <Input type="file" onChange={(event: any) => {
-                                            const file: File = event.target.files[0];
-                                            mainForm.setValue("image", file);
+                                render={() => (
+                                    <FormItem>
+                                        <FormLabel>Imagen</FormLabel>
+                                        <FormControl>
+                                            <Input type="file" onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                                const files = event.target.files;
+                                                if (files && files.length > 0) {
+                                                    const file: File = files[0];
+                                                    mainForm.setValue("image", file);
+                                                } else {
+                                                    console.log("No file selected");
+                                                }
                                             }} 
-                                        />
-                                    </FormControl>
-                                    <FormDescription>
+                                            />
+                                        </FormControl>
+                                        <FormDescription>
                                         Agrega una imagen para mostrar como portada del evento.
-                                    </FormDescription>
-                                    <FormMessage />
-                                </FormItem>
+                                        </FormDescription>
+                                        <FormMessage />
+                                    </FormItem>
                                 )}
                             />
                             <div className="flex justify-between">
                                 <Button onClick={ () => setStage(0) }
                                     className="w-auto text-center justify-start">Atras</Button>
-                                <Button onClick={ async () => { await mainForm.trigger("image") && setStage(2)} }
+                                <Button onClick={ async () => { await mainForm.trigger("image") && setStage(2);} }
                                     className="w-auto text-center justify-end">Siguiente</Button>
                             </div>
                         </VisibilityWrapper>    
@@ -260,5 +265,5 @@ export function NewEventForm() {
                 </form>
             </Form>
         </Card>
-    </>)
+    </>);
 }

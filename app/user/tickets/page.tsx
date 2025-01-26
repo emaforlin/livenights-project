@@ -4,14 +4,13 @@ import { useUserTicketContext } from "@/context/UserTicketsContext";
 import Ticket from "./components/Ticket";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import { TicketOrder } from "@prisma/client";
 import { TicketData } from "@/types/event";
 
-export function UserTicketsPage() {
+function UserTicketsPage() {
     const {data: session, status} = useSession();
     const { setUser, tickets, fetchUserTickets } = useUserTicketContext();
 
-    const userId = session?.user!.id!;
+    const userId = session?.user?.id || "0";
     
     useEffect(() => {
         if (session && status==="authenticated") {
@@ -19,7 +18,7 @@ export function UserTicketsPage() {
         }
         fetchUserTickets();
 
-    }, [userId])
+    }, [userId, fetchUserTickets, session, setUser, status]);
 
     return (
         <div className="m-5 w-full">
@@ -37,6 +36,6 @@ export function UserTicketsPage() {
                 ))}
             </div>
         </div>
-    )
+    );
 }
 export default UserTicketsPage;

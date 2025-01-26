@@ -1,8 +1,7 @@
-import PermissionWrapper from '@/components/PermissionWrapper'
+import PermissionWrapper from '@/components/PermissionWrapper';
 import { Card } from '@/components/ui/card';
-import React from 'react'
+import React from 'react';
 import { UpgradeRoleForm } from '@/components/UpgradeRoleForm';
-import { useRole } from '@/context/RoleContext';
 import { getUserRole } from '../lib/dal';
 
 
@@ -10,12 +9,12 @@ const Settings = async () => {
     const role = await getUserRole();
     let accountType: string;
     switch (role) {
-        case "PRODUCER":
-            accountType = "Productor";
-            break;
-        default:
-            accountType = "Usuario";
-            break;
+    case "PRODUCER":
+        accountType = "Productor";
+        break;
+    default:
+        accountType = "Usuario";
+        break;
     }
 
     return (
@@ -28,7 +27,7 @@ const Settings = async () => {
                 </PermissionWrapper>
             </div>
         </Card>
-  )
-}
+    );
+};
 
-export default Settings
+export default Settings;

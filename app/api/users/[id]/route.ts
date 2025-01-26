@@ -17,7 +17,7 @@ export async function GET(request: NextRequest,
     });
 
     if (!user) {
-        return ErrorResponse(`user not found`, 404)
+        return ErrorResponse(`user not found`, 404);
     }
 
     return GenericResponse(user, 200);
@@ -29,9 +29,9 @@ export async function PATCH(req: NextRequest,
     try {
         const userId = (await params).id;
 
-        const reqBody = await req.json()
-        const expectedFields: string[] = ["role", "username"]
-        const missingFields = expectedFields.filter(f => !(f in reqBody))
+        const reqBody = await req.json();
+        const expectedFields: string[] = ["role", "username"];
+        const missingFields = expectedFields.filter(f => !(f in reqBody));
                 
         if (missingFields.length > 0) {
             console.log(`error missing fields: ${missingFields}`);
@@ -54,11 +54,11 @@ export async function PATCH(req: NextRequest,
                 }
             }
 
-        })
+        });
         return GenericResponse(updatedUser, 200);
                 
-    } catch (error: any) {
-        console.log(error.message);
+    } catch (error: unknown) {
+        console.log("bad request: ", error);
         return ErrorResponse("couldn't updated user", 400);
     }
         

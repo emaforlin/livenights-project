@@ -5,7 +5,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { z } from "zod"
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DatePickerWithRange } from "@/components/daterange-picker";
 import { useToast } from "@/hooks/use-toast";
@@ -15,8 +15,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 
 const dateRangeSchema = z.object({
     from: z.date({
-      required_error: "La fecha de inicio es obligatoria.",
-      invalid_type_error: "Debe ser una fecha válida.",
+        required_error: "La fecha de inicio es obligatoria.",
+        invalid_type_error: "Debe ser una fecha válida.",
     }).refine((date) => { 
         const today = new Date();
         today.setHours(0, 0, 0, 0); // Establece la hora a las 00:00 para comparar solo las fechas
@@ -24,17 +24,17 @@ const dateRangeSchema = z.object({
     }, { message: "Esta fecha no puede ser anterior a hoy" }),
     
     to: z.date({
-      required_error: "La fecha de fin es obligatoria.",
-      invalid_type_error: "Debe ser una fecha válida.",
+        required_error: "La fecha de fin es obligatoria.",
+        invalid_type_error: "Debe ser una fecha válida.",
     }).refine((date) => !date || date > new Date(), { message: "Esta fecha debe ser futura" }),
 
-  }).refine(
+}).refine(
     ({ from, to }) => from <= to,
     {
-      message: "La fecha de inicio debe ser anterior o igual a la fecha de fin.",
-      path: ["end_date"], // Marca `end_date` como la fuente del error
+        message: "La fecha de inicio debe ser anterior o igual a la fecha de fin.",
+        path: ["end_date"], // Marca `end_date` como la fuente del error
     }
-  );
+);
 
 const ticketBatchSchema = z.object({
     name: z
@@ -54,7 +54,7 @@ const ticketBatchSchema = z.object({
     date_range: dateRangeSchema,
 
     active: z.boolean().optional().default(false),
-})
+});
 
 export function TicketBatchForm() {
     const router = useRouter();
@@ -73,7 +73,7 @@ export function TicketBatchForm() {
             date_range: undefined,
             active: false,
         },
-    })
+    });
 
     const onSubmit = async (values: z.infer<typeof ticketBatchSchema>) => {
         try {
@@ -86,7 +86,7 @@ export function TicketBatchForm() {
                 start_date: values.date_range.from,
                 end_date: values.date_range.to,
                 event_id: parseInt(eventId)
-            }
+            };
 
             const res = await fetch("/api/tickets/batches", {
                 method: "POST",
@@ -95,7 +95,7 @@ export function TicketBatchForm() {
             });
 
             if (!res.ok) {
-                throw new Error("Falló la creación de la tanda de tickets.")
+                throw new Error("Falló la creación de la tanda de tickets.");
             }
             
             form.reset();
@@ -103,14 +103,14 @@ export function TicketBatchForm() {
             toast({
                 title: "Tanda creada exitosamente.",
                 description: "Ahora puedes crear otra si lo deseas."
-            })
+            });
     
-        } catch (error: any) {
-            console.log(error.message);
+        } catch (error: unknown) {
+            console.log((error as Error).message);
 
             toast({
                 title: "Algo salió mal.",
-                description: error.message,
+                description: (error as Error).message,
                 variant: "destructive"
             });
 
@@ -127,16 +127,16 @@ export function TicketBatchForm() {
                         control={ form.control }
                         name="name"
                         render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Nombre</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Ej. (Preventa, Primera Tanda)" {...field} />
-                            </FormControl>
-                            <FormDescription>
+                            <FormItem>
+                                <FormLabel>Nombre</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Ej. (Preventa, Primera Tanda)" {...field} />
+                                </FormControl>
+                                <FormDescription>
                                 Nombre de la tanda.
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
                         )}
                     />
 
@@ -144,18 +144,18 @@ export function TicketBatchForm() {
                         control={ form.control }
                         name="price"
                         render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Precio</FormLabel>
-                            <FormControl>
-                                <Input type="number" placeholder="Ej. ($ 8000)" {...field}
-                                    onChange={(e) => field.onChange(Number(e.target.value))}
-                                    onReset={() => field.value=0}/>
-                            </FormControl>
-                            <FormDescription>
+                            <FormItem>
+                                <FormLabel>Precio</FormLabel>
+                                <FormControl>
+                                    <Input type="number" placeholder="Ej. ($ 8000)" {...field}
+                                        onChange={(e) => field.onChange(Number(e.target.value))}
+                                        onReset={() => field.value=0}/>
+                                </FormControl>
+                                <FormDescription>
                                 Precio de la tanda.
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
                         )}
                     />
 
@@ -163,17 +163,17 @@ export function TicketBatchForm() {
                         control={ form.control }
                         name="quantity"
                         render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Cantidad</FormLabel>
-                            <FormControl>
-                                <Input type="number" placeholder="Ej. (2000)" {...field}
-                                    onChange={(e) => field.onChange(Number(e.target.value))}/>
-                            </FormControl>
-                            <FormDescription>
+                            <FormItem>
+                                <FormLabel>Cantidad</FormLabel>
+                                <FormControl>
+                                    <Input type="number" placeholder="Ej. (2000)" {...field}
+                                        onChange={(e) => field.onChange(Number(e.target.value))}/>
+                                </FormControl>
+                                <FormDescription>
                                 Máximo de tickets disponibles en la tanda.
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
                         )}
                     />
 
@@ -181,19 +181,19 @@ export function TicketBatchForm() {
                         control={ form.control }
                         name="date_range"
                         render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Activo durante</FormLabel>
-                            <FormControl>
-                                <DatePickerWithRange {...field} 
-                                    value={field.value} 
-                                    onChange={(range) => field.onChange(range)}
+                            <FormItem>
+                                <FormLabel>Activo durante</FormLabel>
+                                <FormControl>
+                                    <DatePickerWithRange {...field} 
+                                        value={field.value} 
+                                        onChange={(range) => field.onChange(range)}
                                     />
-                            </FormControl>
-                            <FormDescription>
+                                </FormControl>
+                                <FormDescription>
                                 La tanda estará permanecerá activa durante estas fechas o hasta que se agoten los tickets, o bien, sea desactivada manualmente.
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
                         )}
                     />
                 </div>
@@ -201,5 +201,5 @@ export function TicketBatchForm() {
             </form>
         </Form>
     </Card>
-    )
+    );
 }

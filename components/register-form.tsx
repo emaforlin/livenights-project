@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,12 +32,12 @@ const registerFormSchema = z.object({
         .min(8, {message: "debe tener al menos 8 caracteres"})
         .max(70, {message: "contraseña demasiado larga"})
         .trim(),
-})
+});
 
 export function RegisterForm({
     className,
     ...props
-  }: React.ComponentPropsWithoutRef<"div">) {
+}: React.ComponentPropsWithoutRef<"div">) {
     const { toast } = useToast();
     const form = useForm<z.infer<typeof registerFormSchema>>({
         resolver: zodResolver(registerFormSchema),
@@ -59,87 +59,87 @@ export function RegisterForm({
             toast({title: "Ya puedes loguearte en tu cuenta!"});
             
             router.push("/auth/login");
-        } catch (error: any) {
+        } catch (error: unknown) {
             toast({
                 title: "Algo salió mal.", 
-                description: error.message, 
+                description: (error as Error).message, 
                 variant: "destructive"
             });
         }
-    }
+    };
 
     return (
-    <div className={cn("flex flex-col gap-6", className||"")} {...props}>
-        <Card>
-            <CardHeader>
-                <CardTitle className="text-2xl">Registrate</CardTitle>
-                <CardDescription>Completa el formulario para crear tu cuenta.
+        <div className={cn("flex flex-col gap-6", className||"")} {...props}>
+            <Card>
+                <CardHeader>
+                    <CardTitle className="text-2xl">Registrate</CardTitle>
+                    <CardDescription>Completa el formulario para crear tu cuenta.
                     O <Link href="/auth/login" className="text-gray-800 hover:underline">Inicia Sesión</Link> con tu cuenta de Google
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Form {...form}>
-                    <form onSubmit={ form.handleSubmit(onSubmit) } className="space-y-4">
-                        <div className="flex flex-col gap-6">
-                            <FormField
-                                control={form.control}
-                                name="name"
-                                render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Nombre</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Ingresa tu nombre" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-                            <FormField 
-                                control={form.control}
-                                name="email"
-                                render={({field}) => (
-                                <FormItem>
-                                    <FormLabel>Correo electrónico</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="yo@ejemplo.com" {...field}/>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-                            <FormField 
-                                control={form.control}
-                                name="username"
-                                render={({field}) => (
-                                <FormItem>
-                                    <FormLabel>Nombre de usuario</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="" {...field}/>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-                            <FormField 
-                                control={form.control}
-                                name="password"
-                                render={({field}) => (
-                                <FormItem>
-                                    <FormLabel>Contraseña</FormLabel>
-                                    <FormControl>
-                                        <Input type="password" {...field}/>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                                )}
-                            />
-                        </div>
-                        <Button type="submit" className="w-full h-14 font-bold text-lg">Crear Tanda</Button>
-                    </form>
-                </Form>
-            </CardContent>
-        </Card>
-    </div>
-    )
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Form {...form}>
+                        <form onSubmit={ form.handleSubmit(onSubmit) } className="space-y-4">
+                            <div className="flex flex-col gap-6">
+                                <FormField
+                                    control={form.control}
+                                    name="name"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Nombre</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Ingresa tu nombre" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField 
+                                    control={form.control}
+                                    name="email"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Correo electrónico</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="yo@ejemplo.com" {...field}/>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField 
+                                    control={form.control}
+                                    name="username"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Nombre de usuario</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="" {...field}/>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField 
+                                    control={form.control}
+                                    name="password"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Contraseña</FormLabel>
+                                            <FormControl>
+                                                <Input type="password" {...field}/>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <Button type="submit" className="w-full h-14 font-bold text-lg">Crear Tanda</Button>
+                        </form>
+                    </Form>
+                </CardContent>
+            </Card>
+        </div>
+    );
 }
 export default RegisterForm;

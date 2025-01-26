@@ -12,7 +12,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ uid:
         select: {
             usedAt: true
         }
-    })
+    });
 
-return GenericResponse({used: !!ticketUsedAt}, 200)
+    return GenericResponse({used: !!ticketUsedAt}, 200);
 }

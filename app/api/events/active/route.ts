@@ -1,8 +1,10 @@
 import { prisma } from "@/app/lib/db";
-import { GenericResponse } from "@/utils/responses";
+import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
+    if (req.method !== "GET") return ErrorResponse("method not allowed", 405);
+    
     const now = new Date();
 
     const events = await prisma.event.findMany({
@@ -27,7 +29,7 @@ export async function GET(req: NextRequest) {
             },
             producer: true
         }
-    })
+    });
 
     return GenericResponse(events, 200);
 }

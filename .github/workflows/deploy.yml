@@ -1,0 +1,36 @@
+name: "CI/CD Pipeline"
+on:
+  push:
+    branches:
+      - prod
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone repo
+      uses: actions/checkout@v3
+    
+    - name: Setup Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ secrets. GCP_PROJECT }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+    
+    - name: Authenticate Docker with Artifact Registry
+      run: |
+        gcloud auth configure-docker us-central1-docker.pkg.dev
+
+    - name: Build and push 
+      run: |
+        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/emaforlin/livenights .
+        docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/emaforlin/livenights
+
+    - name: Deploy to  Cloud Run
+      run: |
+        gcloud run deploy livenights \
+        --image us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/emaforlin/livenights \
+        --platform managed \
+        --region us-central1 \
+        --allow-unauthenticated
+      

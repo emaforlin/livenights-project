@@ -1,7 +1,6 @@
 import { prisma } from "@/app/lib/db";
 import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { hash } from "bcrypt";
-import { getSession } from "@/app/lib/dal"
 import { NextRequest } from "next/server";
 import { z } from "zod";
 

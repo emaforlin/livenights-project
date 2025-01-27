@@ -31,7 +31,7 @@ export function LoginForm({
         const res = await signIn("credentials", {
             email,
             password,
-            redirect: false
+            redirectTo: "/"
         });
 
         if (!res || res.error || !res.ok) {

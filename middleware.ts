@@ -8,8 +8,9 @@ export async function middleware(req: NextRequest) {
     const isOnSettings = pathname.startsWith("/settings");
     const isOnUserDashboard = pathname.startsWith("/user");
     const isAuthAPIRoute = pathname.startsWith("/api/auth");
+    const isOnRegister = pathname.startsWith("/api/register");
 
-    if (!token && !isAuthAPIRoute) {
+    if (!token && !isAuthAPIRoute && !isOnRegister) {
         return NextResponse.redirect(new URL("/auth/login", req.url));
     }
 

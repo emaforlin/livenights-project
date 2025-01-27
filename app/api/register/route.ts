@@ -30,8 +30,8 @@ const userRegisterSchema = z.object({
 export async function POST(req: NextRequest) {
     try {
         if (req.method !== "POST") return ErrorResponse("method not allowed", 405);
-        const session = await getSession();
-        if (!session) return ErrorResponse("unauthorized", 401);
+        // const session = await getSession();
+        // if (!session) return ErrorResponse("unauthorized", 401);
         
         const body = await req.json();
         const newUser = userRegisterSchema.parse(body);

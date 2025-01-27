@@ -42,6 +42,24 @@ jobs:
         --set-env-vars 'DATABASE_URL=${{ secrets.DATABASE_URL }}' \
         --set-env-vars 'AUTH_GOOGLE_ID=${{ secrets.AUTH_GOOGLE_ID }}' \
         --set-env-vars 'AUTH_GOOGLE_SECRET=${{ secrets.AUTH_GOOGLE_SECRET }}' \
-        --set-env-vars 'AUTH_TRUST_HOST=${{ secrets.AUTH_TRUST_HOST }}'       
+        --set-env-vars 'AUTH_TRUST_HOST=${{ secrets.AUTH_TRUST_HOST }}'
+    
+    - name: Get Cloud Run URL
+      id: get-url
+      run: |
+        URL=$(gcloud run services describe livenights \
+          --platform managed \
+          --region us-central1 \
+          --format='value(status.url)')
+        echo "CLOUD_RUN_URL=$URL" >> $GITHUB_ENV
+
+    - name: Set NEXTAUTH_URL
+      run: |
+        gcloud run services update livenights \
+          --platform managed \
+          --region us-central1 \
+          --update-env-vars "NEXTAUTH_URL=$CLOUD_RUN_URL"
+      
+        
         
         

@@ -44,5 +44,12 @@ jobs:
         --set-env-vars 'AUTH_GOOGLE_SECRET=${{ secrets.AUTH_GOOGLE_SECRET }}' \
         --set-env-vars 'AUTH_TRUST_HOST=${{ secrets.AUTH_TRUST_HOST }}'
         
+        URL=$(gcloud run services describe livenights-app \
+        --region us-central1 --format='value(status.url)')
+
+        gcloud run services update livenights-app \
+        --platform managed \
+        --region us-central1 \
+        --set-env-vars 'NEXTAUTH_URL=$URL'        
         
         

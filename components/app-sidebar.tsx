@@ -6,13 +6,10 @@ import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
-    SidebarMenu,
-    SidebarMenuItem,
     SidebarRail,
 } from "@/components/ui/sidebar";
 import { getSession } from "@/app/lib/dal";
 import RedirectBtn from "./RedirectBtn";
-import { DropdownMenu } from "./ui/dropdown-menu";
 
 type UserData = {
   firstname: string

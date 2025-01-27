@@ -1,4 +1,4 @@
-import { getSession, getUserRole } from "@/app/lib/dal";
+import { getUserRole } from "@/app/lib/dal";
 import { prisma } from "@/app/lib/db";
 import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { NextRequest } from "next/server";
@@ -42,7 +42,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ uid:
                 used_at: res.usedAt
             }, 200);   
         }
-    } catch (error) {
+    } catch (error: unknown) {
+        console.log((error as Error).message);
         return ErrorResponse("bad request", 400);
     }
 }

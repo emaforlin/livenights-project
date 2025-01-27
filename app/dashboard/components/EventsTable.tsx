@@ -6,38 +6,17 @@ import { useEventContext } from "@/context/EventContext";
 import { summarizeEvents } from "@/app/lib/utils";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import { useToast } from "@/hooks/use-toast";
-import UpdateEventForm from "@/components/UpdateEventForm";
 
 export const EventsTable = () => {
     const { loading,  events, fetchEventsByProducer } = useEventContext(); 
     const { data: session } = useSession();
     const id = session?.user?.id ? parseInt(session.user.id) : -1;
-    const { toast } = useToast();
 
   
     useEffect(() => {
         fetchEventsByProducer(id);
     }, [id]);
 
-    const handleDelete = async (id: number) => {
-        try {
-            const res = await fetch(`/api/events/${id}`, {
-                method: "DELETE",
-            });
-            if (!res.ok) throw new Error("No se pudo eliminar el evento.");
-
-            toast({ title: "Evento eliminado exitosamente." });
-        } catch (error: unknown) {
-            const errorMessage =
-        error instanceof Error ? error.message : "Algo salió mal";
-            toast({
-                title: errorMessage,
-                description: "Primero debes eliminar las tandas de tickets asociadas",
-                variant: "destructive",
-            });
-        }
-    };
 
 
     if (loading) return <div className="text-sm text-center">Cargando</div>;

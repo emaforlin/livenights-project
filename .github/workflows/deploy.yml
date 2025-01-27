@@ -25,7 +25,7 @@ jobs:
       run: |
         gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
 
-    - name: Buld and push to Artifact Registry
+    - name: Build and push to Artifact Registry
       run: |
         docker buildx build . -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/livenights/livenights-app
         docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/livenights/livenights-app
@@ -47,7 +47,7 @@ jobs:
     - name: Get Cloud Run URL
       id: get-url
       run: |
-        URL=$(gcloud run services describe livenights \
+        URL=$(gcloud run services describe livenights-app \
           --platform managed \
           --region us-central1 \
           --format='value(status.url)')
@@ -55,7 +55,7 @@ jobs:
 
     - name: Set NEXTAUTH_URL
       run: |
-        gcloud run services update livenights \
+        gcloud run services update livenights-app \
           --platform managed \
           --region us-central1 \
           --update-env-vars "NEXTAUTH_URL=$CLOUD_RUN_URL"

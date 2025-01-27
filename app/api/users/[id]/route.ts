@@ -1,3 +1,4 @@
+import { getUserRole } from "@/app/lib/dal";
 import { prisma } from "@/app/lib/db";
 import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { NextRequest } from "next/server";
@@ -5,6 +6,14 @@ import { NextRequest } from "next/server";
 export async function GET(request: NextRequest, 
     { params }: { params: Promise<{ id: string }> }
 ) {
+    if (request.method !== "GET") 
+        return ErrorResponse("method not allowed", 405);
+    
+    const role = await getUserRole()??"";
+
+    if (!["PRODUCER", "USER"].includes(role)) 
+        return ErrorResponse("forbidden", 403);
+
     const userId = (await params).id;
 
     const includeRole = request.nextUrl.searchParams.get("role");
@@ -27,6 +36,14 @@ export async function PATCH(req: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ){
     try {
+        if (req.method !== "PATCH") 
+            return ErrorResponse("method not allowed", 405);
+                
+        const role = await getUserRole()??"";
+        
+        if (!["PRODUCER", "USER"].includes(role)) 
+            return ErrorResponse("forbidden", 403);
+        
         const userId = (await params).id;
 
         const reqBody = await req.json();

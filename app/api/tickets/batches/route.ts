@@ -1,3 +1,4 @@
+import { getUserRole } from "@/app/lib/dal";
 import { prisma } from "@/app/lib/db";
 import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { TicketBatch } from "@prisma/client";
@@ -41,6 +42,14 @@ const ticketBatchSchema = z.object({
 
 export async function POST(req: NextRequest) {
     try {
+        if (req.method !== "POST") 
+            return ErrorResponse("method not allowed", 405);
+        
+        const role = await getUserRole()??"";
+
+        if (role !== "PRODUCER") 
+            return ErrorResponse("forbidden", 403);
+
         const reqBody = await req.json();
 
         const result =  ticketBatchSchema.safeParse(reqBody);
@@ -88,9 +97,16 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-    const eventId = req.nextUrl.searchParams.get("event");
-
     try {
+        if (req.method !== "GET") 
+            return ErrorResponse("method not allowed", 405);
+        
+        const role = await getUserRole()??"";
+
+        if (!["PRODUCER", "USER"].includes(role)) 
+            return ErrorResponse("forbidden", 403);
+
+        const eventId = req.nextUrl.searchParams.get("event");
         if (!eventId) {
             throw new Error("event id required");
         }

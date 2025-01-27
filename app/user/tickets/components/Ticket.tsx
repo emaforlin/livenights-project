@@ -1,9 +1,9 @@
 "use client";
 
+import QRTicket from '@/components/QRTicket';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import QRCode from "react-qr-code";
 
 interface TicketProps {
   data: {
@@ -15,6 +15,7 @@ interface TicketProps {
     uid: string;
   }
 }
+
 
 function Ticket({ data }: TicketProps) {
     // const [used, setUsed] = useState<boolean>(false);
@@ -68,9 +69,7 @@ function Ticket({ data }: TicketProps) {
 
                         </div>
                     </div>
-                    <div className="flex justify-center w-1/3">
-                        <QRCode value={data.uid} size={200}></QRCode>
-                    </div>
+                   <QRTicket uid={data.uid} />
                 </div>
             </DialogContent>
         </Dialog>

@@ -9,7 +9,8 @@ const SignOut = () => {
             <LogOut/>
             <form action={signOutAction}>
                 <button type="submit"
-                    onClick={() => setRole("GUEST")}
+                    onClick={() => {
+                        setRole("GUEST")}}
                     className="hover">Cerrar Sesion</button>
             </form>
         </>

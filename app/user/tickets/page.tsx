@@ -33,6 +33,7 @@ function UserTicketsPage() {
                                 description: ticket.description,
                                 location: ticket.event.location,
                                 uid: ticket.uid,
+                                used: ticket.usedAt?true:false
                             }}
                         />
                     </div>

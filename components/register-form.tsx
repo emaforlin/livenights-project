@@ -86,9 +86,9 @@ export function RegisterForm({
                                     name="name"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Nombre</FormLabel>
+                                            <FormLabel>Nombre Completo</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="Ingresa tu nombre" {...field} />
+                                                <Input placeholder="Emanuel Forlin" {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>

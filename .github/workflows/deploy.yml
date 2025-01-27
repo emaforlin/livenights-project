@@ -36,7 +36,6 @@ jobs:
         --image us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/livenights/livenights-app \
         --platform managed \
         --region us-central1
-        --allow-unauthenticated
         --set-env-vars \
         AUTH_SECRET=${{ secrets.AUTH_SECRET }}, \
         DATABASE_URL=${{ secrets.DATABASE_URL }}, \

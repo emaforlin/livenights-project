@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
+import path from "path";
 
 export async function middleware(req: NextRequest) {
     const token = await getToken({ req, secret: process.env.AUTH_SECRET });
@@ -7,10 +8,10 @@ export async function middleware(req: NextRequest) {
     const isOnDashboard = pathname.startsWith("/dashboard");
     const isOnSettings = pathname.startsWith("/settings");
     const isOnUserDashboard = pathname.startsWith("/user");
-    const isAuthAPIRoute = pathname.startsWith("/api/auth");
     const isOnRegister = pathname.startsWith("/api/register");
+    const isOnLogin = pathname.startsWith("/auth/login");
 
-    if (!token && !isAuthAPIRoute && !isOnRegister) {
+    if (!token && !isOnRegister && !isOnLogin) {
         return NextResponse.redirect(new URL("/auth/login", req.url));
     }
 
@@ -36,6 +37,5 @@ export const config =  {
         "/dashboard/:path*",
         "/settings/:path*",
         "/user/:path*",
-        "/api/:path*"
     ],
 };

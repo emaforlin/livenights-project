@@ -34,6 +34,6 @@ jobs:
       run: |
         gcloud run deploy livenights-app \
         --image us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/livenights/livenights-app \
-    --platform managed \
-    --region us-central1
-    --allow-unauthenticated
+        --platform managed \
+        --region us-central1
+        --allow-unauthenticated

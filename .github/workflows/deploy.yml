@@ -5,6 +5,7 @@ on:
       - main
 jobs:
   build-deploy:
+    environment: App Deploy
     runs-on: ubuntu-latest
     steps:
     - name: Clone repo

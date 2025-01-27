@@ -29,6 +29,7 @@ jobs:
         docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/livenights/livenights-app
         docker push us-central1-docker.pkg.dev/${{ secret.GCP_PROJECT }}/livenights/livenights-app
 
+
     - name: Deploy on Cloud Run
       run: |
         gcloud run deploy livenights-app \

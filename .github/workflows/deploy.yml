@@ -9,27 +9,31 @@ jobs:
     steps:
     - name: Clone repo
       uses: actions/checkout@v3
-    
+
+    - name: Authenticate with Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
     - name: Setup Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
       with:
-        project_id: ${{ secrets. GCP_PROJECT }}
-        service_account_key: ${{ secrets.GCP_SA_KEY }}
-    
+        project_id: ${{ secrets.GCP_PROJECT }}
+
     - name: Authenticate Docker with Artifact Registry
       run: |
-        gcloud auth configure-docker us-central1-docker.pkg.dev
+        gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
 
-    - name: Build and push 
+    - name: Buld and push to Artifact Registry
       run: |
-        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/livenights .
-        docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/livenights
+        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/livenights/livenights-app
+        docker push us-central1-docker.pkg.dev/${{ secret.GCP_PROJECT }}/livenights/livenights-app
 
-    - name: Deploy to  Cloud Run
+
+    - name: Deploy on Cloud Run
       run: |
-        gcloud run deploy livenights \
-        --image us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/livenights \
-        --platform managed \
-        --region us-central1 \
-        --allow-unauthenticated
-      
+        gcloud run deploy livenights-app \
+        --image us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/livenights/livenights-app \
+    --platform managed \
+    --region us-central1
+    --allow-unauthenticated

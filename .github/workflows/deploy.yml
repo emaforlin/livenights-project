@@ -26,7 +26,7 @@ jobs:
 
     - name: Buld and push to Artifact Registry
       run: |
-        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/livenights/livenights-app
+        docker buildx build . -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/livenights/livenights-app
         docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/livenights/livenights-app
 
 

@@ -50,6 +50,6 @@ jobs:
         gcloud run services update livenights-app \
         --platform managed \
         --region us-central1 \
-        --update-env-vars 'NEXTAUTH_URL=$URL'        
+        --update-env-vars 'NEXTAUTH_URL=${{URL}}'        
         
         

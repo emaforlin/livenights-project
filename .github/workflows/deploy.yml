@@ -5,6 +5,7 @@ on:
       - main
 jobs:
   build-deploy:
+    environment: App Deploy
     runs-on: ubuntu-latest
     steps:
     - name: Clone repo
@@ -24,16 +25,41 @@ jobs:
       run: |
         gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
 
-    - name: Buld and push to Artifact Registry
+    - name: Build and push to Artifact Registry
       run: |
-        docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/livenights/livenights-app
-        docker push us-central1-docker.pkg.dev/${{ secret.GCP_PROJECT }}/livenights/livenights-app
+        docker buildx build . -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/livenights/livenights-app
+        docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/livenights/livenights-app
 
 
     - name: Deploy on Cloud Run
       run: |
         gcloud run deploy livenights-app \
         --image us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/livenights/livenights-app \
-    --platform managed \
-    --region us-central1
-    --allow-unauthenticated
+        --platform managed \
+        --region us-central1 \
+        --allow-unauthenticated \
+        --set-env-vars 'AUTH_SECRET=${{ secrets.AUTH_SECRET }}' \
+        --set-env-vars 'DATABASE_URL=${{ secrets.DATABASE_URL }}' \
+        --set-env-vars 'AUTH_GOOGLE_ID=${{ secrets.AUTH_GOOGLE_ID }}' \
+        --set-env-vars 'AUTH_GOOGLE_SECRET=${{ secrets.AUTH_GOOGLE_SECRET }}' \
+        --set-env-vars 'AUTH_TRUST_HOST=${{ secrets.AUTH_TRUST_HOST }}'
+    
+    - name: Get Cloud Run URL
+      id: get-url
+      run: |
+        URL=$(gcloud run services describe livenights-app \
+          --platform managed \
+          --region us-central1 \
+          --format='value(status.url)')
+        echo "CLOUD_RUN_URL=$URL" >> $GITHUB_ENV
+
+    - name: Set NEXTAUTH_URL
+      run: |
+        gcloud run services update livenights-app \
+          --platform managed \
+          --region us-central1 \
+          --update-env-vars "NEXTAUTH_URL=$CLOUD_RUN_URL"
+
+        
+        
+        

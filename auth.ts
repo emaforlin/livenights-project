@@ -7,16 +7,16 @@ import { compare } from "bcryptjs";
 export const { handlers, signIn, signOut, auth} = NextAuth({
     providers: [GoogleProvider, CredentialsProvider({
         async authorize(credentials:  Partial<Record<string, unknown>>): Promise<User | null> {
-            if (!credentials) return null;
+            // if (!credentials) return null;
             const {email, password} = credentials as { email: string; password: string };
             
             const dbUser = await prisma.user.findUnique({where: {email}, include: {role: true}});
 
-            if (!dbUser) throw new Error("Email o contraseña incorrectos.");
+            if (!dbUser) return null
 
             const isCorrectPassword = await compare(password, dbUser.password!);
 
-            if (!isCorrectPassword) throw new Error("Email o contraseña incorrectos.");
+            if (!isCorrectPassword) return null;
 
             return {
                 id: String(dbUser.id),
@@ -31,7 +31,7 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
             const email = user.email!;
             const name = user.name!;
 
-            await prisma.user.upsert({
+            const res = await prisma.user.upsert({
                 where: { email },
                 update: {},
                 create: { 
@@ -47,7 +47,7 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
                     },
                 },
             });
-            return true;
+            return res?true:false;
         },
 
         async session({ session, token }) {

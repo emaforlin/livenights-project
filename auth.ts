@@ -67,11 +67,10 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
                         role: true
                     }
                 });
-                console.log("db data: ", dbUser);
+                console.log("fetching user role..., found: ", dbUser?.role.name);
                 
         
                 token.role = dbUser?.role.name || "GUEST";
-
                 token.userId = dbUser?.id;
             }
             return token;

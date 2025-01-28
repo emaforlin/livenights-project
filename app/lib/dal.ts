@@ -11,20 +11,13 @@ export const getSession = async () => {
 export const getUserRole = async () => {
     const session = await auth();
     if (!session || !session.user || !session.user.email) return null;
-    
-    try {
-        const dbUser = await prisma.user.findUnique({
-            where: {
-                email: session.user.email }, 
-            include: {
-                role: true,
-            }
-        });
+    const dbUser = await prisma.user.findUnique({
+        where: {
+            email: session.user.email }, 
+        include: {
+            role: true,
+        }
+    });
          
-        return dbUser?.role?.name || "GUEST";
-    } catch (error: unknown) {
-        console.log("failed to fetch user roles", (error as Error).message);
-        return "GUEST";
-    }
-
+    return dbUser?.role?.name || "GUEST";
 };

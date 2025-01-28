@@ -80,6 +80,9 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
         strategy: "jwt",
         maxAge: 1 * 60 * 60
     },
+    jwt: {
+        maxAge: 1 * 60 * 60,
+    },
     pages: {
         signIn: "/auth/login",
         error: "/auth/unauthorized"

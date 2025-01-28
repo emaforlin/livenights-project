@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { getUserRole } from "./app/lib/dal";
+// import { getUserRole } from "./app/lib/dal";
 
 export async function middleware(req: NextRequest) {
     const token = await getToken({ req, secret: process.env.AUTH_SECRET });
-    const role = await getUserRole()??"GUEST";
+    const role = token?.role??"GUEST";
 
     const pathname = req.nextUrl.pathname
     const isOnDashboard = pathname.startsWith("/dashboard");
@@ -13,7 +13,7 @@ export async function middleware(req: NextRequest) {
     const isOnRegister = pathname.startsWith("/auth/register");
     const isOnLogin = pathname.startsWith("/auth/login");
 
-    console.log("PATHNAME:",pathname)
+    console.log("PATHNAME:",pathname, "Role:", role)
 
     if (!token && (isOnRegister || isOnLogin)) {
         return NextResponse.next();

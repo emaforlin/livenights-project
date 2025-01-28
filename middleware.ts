@@ -17,6 +17,7 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL("/auth/login", req.url));
     }
 
+
     // const role = (token?.role as string) || "GUEST";
 
     if (isOnDashboard && role !== "PRODUCER") {
@@ -36,9 +37,9 @@ export async function middleware(req: NextRequest) {
 
 export const config =  {
     matcher: [
-        "/dashboard/:path*",
-        "/settings/:path*",
-        "/user/:path*",
-        "/api/:path*"
+        // "/dashboard/:path*",
+        // "/settings/:path*",
+        // "/user/:path*",
+        // "/api/:path*"
     ],
 };

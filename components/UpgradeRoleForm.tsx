@@ -20,8 +20,9 @@ const formSchema = z.object({
     })
 });
 
+
 export function UpgradeRoleForm() {
-    const {data: session} = useSession();
+    const {data: session, update} = useSession();
     const { setRole } = useRole();
     
     const router = useRouter();
@@ -49,11 +50,14 @@ export function UpgradeRoleForm() {
         });
         if (res.ok) {
             setRole("PRODUCER");
+            await update({
+                ...session
+            });
             router.push("/settings");
         }
 
     }
-    
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

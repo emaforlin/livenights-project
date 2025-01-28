@@ -75,7 +75,7 @@ export async function PATCH(req: NextRequest,
         return GenericResponse(updatedUser, 200);
                 
     } catch (error: unknown) {
-        console.log("bad request: ", error);
+        console.log("bad request: ", (error as Error).message);
         return ErrorResponse("couldn't updated user", 400);
     }
         

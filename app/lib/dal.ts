@@ -23,7 +23,7 @@ export const getUserRole = async () => {
          
         return dbUser?.role?.name || "GUEST";
     } catch (error: unknown) {
-        console.log("failed to fetch user roles", error);
+        console.log("failed to fetch user roles", (error as Error).message);
         return "GUEST";
     }
 

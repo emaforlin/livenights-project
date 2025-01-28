@@ -52,6 +52,7 @@ jobs:
           --region us-central1 \
           --format='value(status.url)')
         echo "CLOUD_RUN_URL=$URL" >> $GITHUB_ENV
+        echo "TICKETS_ENDPOINT=$URL/api/tickets" >> $GITHUB_ENV
 
     - name: Set more env vars
       run: |
@@ -59,7 +60,7 @@ jobs:
           --platform managed \
           --region us-central1 \
           --update-env-vars "NEXTAUTH_URL=$CLOUD_RUN_URL"
-          --update-env-vars "NEXT_PUBLIC_TICKETS_API_ENDPOINT=$CLOUD_RUN_URL/api/tickets"
+          --update-env-vars "NEXT_PUBLIC_TICKETS_API_ENDPOINT=$TICKETS_ENDPOINT"
 
         
         

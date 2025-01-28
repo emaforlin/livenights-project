@@ -13,13 +13,13 @@ interface TicketProps {
     category: string;
     date: Date;
     uid: string;
+    used: boolean;
   }
 }
 
 
 function Ticket({ data }: TicketProps) {
-    // const [used, setUsed] = useState<boolean>(false);
-    const used = false;
+
     const formattedDate = format(data.date, "dd/MM/yyyy | HH:mm ", {locale: es});
     console.log("used", used);
     // bg-pink-500 hover:bg-pink-600

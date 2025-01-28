@@ -53,13 +53,12 @@ jobs:
           --format='value(status.url)')
         echo "CLOUD_RUN_URL=$URL" >> $GITHUB_ENV
 
-    - name: Set more env vars
+    - name: Set NEXTAUTH_URL
       run: |
         gcloud run services update livenights-app \
           --platform managed \
           --region us-central1 \
           --update-env-vars "NEXTAUTH_URL=$CLOUD_RUN_URL"
-          --update-env-vars "NEXT_PUBLIC_TICKETS_API_ENDPOINT=$CLOUD_RUN_URL/api/tickets"
 
         
         

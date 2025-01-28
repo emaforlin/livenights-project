@@ -59,6 +59,7 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
         },
 
         async jwt({ token, user }) {
+            console.log("jwt callback");
             if (user) {
                 const dbUser = await prisma.user.findUnique({
                     where: {email: user.email! }, 
@@ -66,6 +67,7 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
                         role: true
                     }
                 });
+                console.log("db data: ", dbUser);
                 
         
                 token.role = dbUser?.role.name || "GUEST";

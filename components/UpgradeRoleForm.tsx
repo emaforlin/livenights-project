@@ -51,8 +51,13 @@ export function UpgradeRoleForm() {
         if (res.ok) {
             setRole("PRODUCER");
             await update({
-                ...session
+                ...session,
+                user: {
+                    ...session?.user,
+                    role: "PRODUCER"
+                }
             });
+
             router.push("/settings");
         }
 

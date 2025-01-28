@@ -58,18 +58,30 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
             return session;
         },
 
-        async jwt({ token, user }) {
-            console.log("jwt callback");
-            if (user) {
+        async jwt({ token, user, trigger }) {
+            trigger && console.log(`jwt callback trigger: ${trigger}`);
+
+            if (user) {    
                 const dbUser = await prisma.user.findUnique({
                     where: {email: user.email! }, 
                     include: {
                         role: true
                     }
                 });
-                console.log("fetching user role..., found: ", dbUser?.role.name);
+                console.log("fetching user role on 'signIn'..., found: ", dbUser?.role.name);
                 
-        
+                token.role = dbUser?.role.name || "GUEST";
+                token.userId = dbUser?.id;
+            } else if (token && trigger) {
+
+                const dbUser = await prisma.user.findUnique({
+                    where: {email: token.email! }, 
+                    include: {
+                        role: true
+                    }
+                });
+                console.log(`fetching user role because of 'trigger: '${trigger}'..., found: `, dbUser?.role.name);
+                
                 token.role = dbUser?.role.name || "GUEST";
                 token.userId = dbUser?.id;
             }
@@ -79,10 +91,6 @@ export const { handlers, signIn, signOut, auth} = NextAuth({
     secret: process.env.AUTH_SECRET,
     session: {
         strategy: "jwt",
-        maxAge: 1 * 60 * 60
-    },
-    jwt: {
-        maxAge: 1 * 60 * 60,
     },
     pages: {
         signIn: "/auth/login",

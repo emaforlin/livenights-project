@@ -70,7 +70,7 @@ export function NavUser({
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                 <Avatar className="h-8 w-8 rounded-lg">
                                     <AvatarImage src={user.avatar} alt={user.firstname} />
-                                    <AvatarFallback className="rounded-lg">{user.firstname[0]+user.lastname[0]}</AvatarFallback>
+                                    <AvatarFallback className="rounded-lg">{`${user.firstname[0]} ${user.lastname[0]}`}</AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-semibold">{user.firstname}</span>
@@ -80,10 +80,6 @@ export function NavUser({
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <BadgeCheck />
-                                Mi Cuenta
-                            </DropdownMenuItem>
                             <DropdownMenuItem>
                                 <SettingsBtn />
                             </DropdownMenuItem>

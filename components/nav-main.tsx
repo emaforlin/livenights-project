@@ -28,23 +28,18 @@ const routes = [
 
 const producerItems = [
     {
-        title: "General",
-        url: "/dashboard",
-        icon: LayoutDashboard,
-    },
-    {
         title: "Eventos",
         url: "/dashboard#Events",
-        icon: Ticket,
+        icon: LayoutDashboard,
     }, 
     {
-        title: "Tickets",
+        title: "Tandas de Tickets",
         url: "/dashboard/tickets",
         icon: Ticket
     },
     {
         title: "Colaboradores",
-        url: "#",
+        url: "#unimplemented",
         icon: UserPen
     },
 ];

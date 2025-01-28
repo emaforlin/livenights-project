@@ -21,12 +21,10 @@ interface TicketProps {
 function Ticket({ data }: TicketProps) {
 
     const formattedDate = format(data.date, "dd/MM/yyyy | HH:mm ", {locale: es});
-    console.log("used", used);
-    // bg-pink-500 hover:bg-pink-600
     return (
         <Dialog modal>
-            <DialogTrigger disabled={used}>
-                <div className={ used ? 
+            <DialogTrigger disabled={data.used}>
+                <div className={ data.used ? 
                     "bg-gray-400 rounded-md shadow-sm px-8 py-4 w-80 h-36 flex" : 
                     "bg-pink-500 hover:bg-pink-600 rounded-md shadow-sm px-8 py-4 w-80 h-36 flex hover:shadow-lg transition duration-300"}>
                     <div className="flex-1 my-auto">

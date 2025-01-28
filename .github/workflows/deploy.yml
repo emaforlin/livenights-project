@@ -59,7 +59,7 @@ jobs:
         gcloud run services update livenights-app \
           --platform managed \
           --region us-central1 \
-          --update-env-vars "NEXTAUTH_URL=$CLOUD_RUN_URL" \
+          --update-env-vars "NEXTAUTH_URL=$CLOUD_RUN_URL"
           --update-env-vars "NEXT_PUBLIC_TICKETS_API_ENDPOINT=$TICKETS_ENDPOINT"
 
         

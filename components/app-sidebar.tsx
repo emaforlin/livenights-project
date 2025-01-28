@@ -32,11 +32,12 @@ export async function AppSidebar({ ...props }: React.ComponentProps<typeof Sideb
         const names = session.user.name!.split(" ");
         user = {
             firstname: names[0] || "",
-            lastname: names[1] || "",
+            lastname: names[1] || names[0][1].toUpperCase(),
             email: session.user.email!,
             avatar: session.user.image!,
         };
     }
+
 
     return (
         <Sidebar collapsible="icon" {...props}>

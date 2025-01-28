@@ -1,17 +1,17 @@
+"use client";
 import { useRole } from "@/context/RoleContext";
-import { signOutAction } from "@/lib/actions";
 import { LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
 
 const SignOut = () => {
     const {setRole} = useRole()
     return (
         <>
             <LogOut/>
-            <form action={signOutAction}>
-                <button type="submit"
-                    onClick={() => setRole("GUEST")}
-                    className="hover">Cerrar Sesion</button>
-            </form>
+            <button className="hover" onClick={() =>{
+                signOut();
+                setRole("GUEST");
+            }}>Cerrar Sesión</button>
         </>
     );
 };

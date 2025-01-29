@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
         }
 
         
-        const imageUrl = (reqBody.image as string).replace(/["']/g, ''); 
+        const imageUrl = reqBody.image.toString().replace(/["']/g, ''); 
         console.log("DEBUG: image url:", imageUrl);
 
         const newEvent = await prisma.event.create({

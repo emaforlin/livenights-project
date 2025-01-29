@@ -52,7 +52,7 @@ model Event {
   description String 
   date DateTime
   location String
-  image String @unique
+  image String @db.MediumText
   producer_id Int
 
   producer User @relation(fields: [producer_id], references: [id])
@@ -106,7 +106,7 @@ model Image {
   id Int @id @default(autoincrement())
   filename String @unique
   filetype String
-  url String @db.Text
+  url String @db.LongText
   owner_id Int
   owner User @relation(fields: [owner_id], references: [id])
 }

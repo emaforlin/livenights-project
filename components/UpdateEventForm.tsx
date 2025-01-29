@@ -100,7 +100,7 @@ const UpdateEventForm = ({ id }: Props) => {
                     title: "Cambios  guardados con éxito.",
                     description: "Los usuario ya pueden notar los cambios.",
                     variant: "default"
-                })
+                });
             }
         } catch (error: unknown) {
             toast({

@@ -62,13 +62,13 @@ export async function PUT(req: Request, { params }:
         
         const eventId = (await params).id;
         const reqBody = await req.json();
-            
+        
         const updatedEvent = await prisma.event.update({
             where: {id: parseInt(eventId)},
             data: {
                 title: reqBody.title,
                 description: reqBody.description,
-                date: new Date(reqBody.date),
+                date: new Date(reqBody.datetime),
                 location: reqBody.location,
                 producer_id: reqBody.producer_id,
             },
@@ -78,11 +78,10 @@ export async function PUT(req: Request, { params }:
             return ErrorResponse(`event with id: ${eventId} not found`, 404);
         }
 
-    
         return GenericResponse(updatedEvent, 200);
     
     } catch (error: unknown) {
-        console.log("something went wrong: ", error);
+        console.log("something went wrong: ", (error as Error).message);
         return ErrorResponse("something went wrong :(", 400);
     }
 }

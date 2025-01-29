@@ -17,6 +17,5 @@ export function summarizeEvents(events: EventDetails[]): EventSummary[] {
             soldTickets: event._count.TicketOrder
         })
     );
-    console.log(summ);
     return summ;
 }

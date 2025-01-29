@@ -105,10 +105,8 @@ model RolePermission {
 model Image {
   id Int @id @default(autoincrement())
   filename String @unique
-  file Bytes
   filetype String
-  in_use Boolean @default(false)
-  last_used DateTime @default(now())
+  url String @db.Text
   owner_id Int
   owner User @relation(fields: [owner_id], references: [id])
 }

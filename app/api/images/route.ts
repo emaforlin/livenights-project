@@ -3,6 +3,17 @@ import { prisma } from "@/app/lib/db";
 import { ErrorResponse, GenericResponse } from "@/utils/responses";
 import { NextRequest } from "next/server";
 import { z } from "zod";
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
+
+const s3 = new S3Client({
+    region: "auto",
+    endpoint: process.env.R2_ENDPOINT,
+    credentials: {
+        accessKeyId: process.env.R2_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.R2_SECRET_KEY_ID!,
+    },
+});
 
 const fileSchema = z.custom<File>((file) => {
     if (!(file instanceof File)) return false;
@@ -18,19 +29,19 @@ const fileSchema = z.custom<File>((file) => {
     }
     return true;
 }, {
-    message: "Archivo invalido",
+    message: "Invalid file",
 });
 
 const stringSchema = z.string();
 
 
-export async function POST(req: NextRequest) {
-    const formData = await req.formData();
-
-    const rawFile = formData.get("file") as File;
-    const rawFileName = formData.get("filename") as string;
-
+export async function POST(req: NextRequest) { 
     try {
+        const formData = await req.formData();
+    
+        const rawFile = formData.get("file") as File;
+        const rawFileName = formData.get("filename") as string;
+
         const session = await getSession();
         if (!session) {
             return ErrorResponse("unauthorized", 401);
@@ -42,7 +53,14 @@ export async function POST(req: NextRequest) {
         }
 
         const producer = await prisma.user.findUnique({
-            where: {id: parseInt(userId)},
+            where: {
+                id: parseInt(userId),
+                AND: {
+                    role: {
+                        name: "PRODUCER"
+                    }
+                }
+            },
         });
 
         if (!producer) {
@@ -50,30 +68,32 @@ export async function POST(req: NextRequest) {
         }
 
         const validImgFile = fileSchema.parse(rawFile);
-        const imgBlob = await validImgFile.bytes();
-
+        const imgBuffer = Buffer.from(await validImgFile.arrayBuffer());
         const validFilename = stringSchema.parse(rawFileName);
+        const uniqueFilename = `${producer.username}_${crypto.randomUUID()}_${validFilename}`;
 
-        const dbImage = await prisma.image.create({
-            data: {
-                file: imgBlob,
-                filetype: validImgFile.type,
-                filename: `${producer?.username}_${validFilename!}`,
-                owner: {
-                    connect: {
-                        id: parseInt(userId)
-                    }
-                }
-            }
-        });
+        const uploadParams = {
+            Bucket: process.env.R2_BUCKET_NAME!,
+            Key: uniqueFilename,
+            Body: imgBuffer,
+            ContentType: validImgFile.type
+        };
+
+        await s3.send(new PutObjectCommand(uploadParams));
+
+        const fileUrl = await getSignedUrl(
+            s3,
+            new GetObjectCommand({ 
+                Bucket: process.env.R2_BUCKET_NAME!,
+                Key: uniqueFilename,
+            }),
+            { expiresIn: 7*24*3600}
+        );
         
-        return GenericResponse(JSON.stringify({
-            id: dbImage.id,
-            name: dbImage.filename
-        }), 200);
+        return GenericResponse(JSON.stringify(fileUrl.replaceAll('"',"")), 200);
 
     } catch (error: unknown) {
-        console.log(error);
+        console.log((error as Error).message);
         return ErrorResponse("bad request", 400);
     }
     

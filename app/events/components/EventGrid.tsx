@@ -28,7 +28,7 @@ const EventGrid = () => {
                                 <div className="relative overflow-hidden">
                                     <Image
                                         className="aspect-square rounded-t-xl group-hover:scale-105 transition-transform duration-300"
-                                        src={"/api/images/"+event.image}
+                                        src={event.image}
                                         width={288}
                                         height={288}
                                         alt={"Cover of an event called " + event.title + " produced by "+event.producer.username}
@@ -51,7 +51,7 @@ const EventGrid = () => {
                                         <div>
                                             <p>Desde: ${minPriceBatch.price}</p>
                                         </div>
-                                    </div>
+                                    </div>  
                                 </div>
                             </Link>
                         </div>                         

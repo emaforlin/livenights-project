@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
                 description: reqBody.description,
                 date: new Date(reqBody.date),
                 location: reqBody.location,
-                image: `${dbProducer?.username}_${reqBody.image!}`,
+                image: reqBody.image,
                 producer: {
                     connect: {
                         id: parseInt(reqBody.producer_id)
@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
         return GenericResponse(newEvent, 201);
 
     } catch (error: unknown) {
-        console.log("something went wrong: ", error);
+        console.log("something went wrong: ", (error as Error).message);
         return ErrorResponse("something went wrong :(", 400);
     }
 }

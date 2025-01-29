@@ -6,6 +6,16 @@ const nextConfig: NextConfig = {
         config.externals = [...config.externals, "bcrypt"];
         return config;
     },
+    images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "livenightimages.82e9eb3b4b7a482645465b7385c97f9f.r2.cloudflarestorage.com",
+                port: "",
+                pathname: "/livenightimages/**"
+            }
+        ]
+    },
     output: "standalone"
 };
 

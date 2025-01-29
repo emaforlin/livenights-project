@@ -76,13 +76,18 @@ export async function POST(req: NextRequest) {
         if  (!dbProducer) {
             return ErrorResponse("bad user input", 400);
         }
+
+        
+        const imageUrl = (reqBody.image as string).replace(/["']/g, ''); 
+        console.log("DEBUG: image url:", imageUrl);
+
         const newEvent = await prisma.event.create({
             data: {
                 title: reqBody.title,
                 description: reqBody.description,
                 date: new Date(reqBody.date),
                 location: reqBody.location,
-                image: reqBody.image as string,
+                image: imageUrl,
                 producer: {
                     connect: {
                         id: parseInt(reqBody.producer_id)

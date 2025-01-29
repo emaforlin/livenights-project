@@ -56,9 +56,10 @@ function SingleEvent({ params }: { params: Promise<{eventId: string }>}) {
                 <div className="w-full md:w-1/2 p-2 md:p-4">
                     <Image
                         alt=''
-                        src={"/api/images/" + thisEvent?.image}
+                        src={thisEvent!.image}
                         width={800}
-                        height={800} />
+                        height={800} 
+                    />
                 </div>
 
                 <div className="w-full md:w-1/2 p-2 md:p-4 flex flex-col min-h-[500px] min-w-[50%]">

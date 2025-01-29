@@ -94,13 +94,27 @@ export function NewEventForm() {
                 const file = mainForm.getValues("image");
                 const filename = values.title.replaceAll(" ","_") + "." + file.type.split("/")[1];
 
+
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("filename", filename);
+
+                const  imgRes = await fetch("/api/images", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const imgUrl = await imgRes.json();
+                
+                console.log(imgUrl);
+
                 const data: Partial<Event> = {
                     title: values.title,
                     date: values.datetime,
                     description: values.description,
                     location: values.location,
                     producer_id: parseInt(userId),
-                    image: filename,
+                    image: imgUrl,
                 };
 
                 const res1 = await fetch("/api/events", {
@@ -112,15 +126,6 @@ export function NewEventForm() {
                 if (!res1.ok) {
                     throw new Error("Falló la creación del evento");
                 }
-
-                const formData = new FormData();
-                formData.append("file", file);
-                formData.append("filename", filename);
-
-                await fetch("/api/images", {
-                    method: "POST",
-                    body: formData,
-                });
 
                 mainForm.reset();
                 

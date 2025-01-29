@@ -30,9 +30,9 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL("/", req.url));
     }
 
-    // if (!token && isOnSettings) {
-    //     return NextResponse.redirect(new URL("/auth/login", req.url));
-    // }
+    if (!token && isOnSettings) {
+        return NextResponse.redirect(new URL("/auth/login", req.url));
+    }
 
     return NextResponse.next();   
 }

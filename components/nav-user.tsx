@@ -1,7 +1,6 @@
 "use client";
 
 import {
-    BadgeCheck,
     ChevronsUpDown,
 } from "lucide-react";
 

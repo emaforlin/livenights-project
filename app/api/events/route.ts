@@ -76,14 +76,13 @@ export async function POST(req: NextRequest) {
         if  (!dbProducer) {
             return ErrorResponse("bad user input", 400);
         }
-        
         const newEvent = await prisma.event.create({
             data: {
                 title: reqBody.title,
                 description: reqBody.description,
                 date: new Date(reqBody.date),
                 location: reqBody.location,
-                image: reqBody.image,
+                image: reqBody.image as string,
                 producer: {
                     connect: {
                         id: parseInt(reqBody.producer_id)
